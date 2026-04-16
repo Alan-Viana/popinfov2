@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --animate-blob: blob 7s infinite;
+  
+  @keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    @apply bg-[#F8FAFC] dark:bg-slate-950 transition-colors duration-300;
+  }
+  button {
+    @apply transition-all;
+  }
+  button:not(:disabled):hover {
+    @apply brightness-110;
+  }
+  h1, h2, h3 {
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  .ui-card {
+    @apply bg-white dark:bg-slate-900 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/40 dark:border-transparent;
+  }
+  .ui-card-muted {
+    @apply rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-200/40 dark:border-transparent;
+  }
+  .ui-icon-box {
+    @apply w-14 h-14 rounded-2xl bg-slate-50/60 dark:bg-slate-900 border border-slate-200/50 dark:border-transparent flex items-center justify-center;
+  }
+  .ui-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 w-full px-4 sm:px-6 bg-[#183F8C] hover:bg-[#1C4AA6] text-white font-bold py-2.5 rounded-xl transition-all shadow-lg shadow-[#183F8C]/20 hover:shadow-[#183F8C]/35 transform hover:-translate-y-0.5 text-xs sm:text-sm whitespace-nowrap;
+  }
+  .ui-ink-underline {
+    @apply relative inline-block isolate after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[6px] after:w-full after:bg-[#183F8C]/35 after:rounded-full after:rotate-[-1deg] after:scale-x-[1.04] after:z-[-1] dark:after:bg-[#6F8ABF]/30;
+  }
+}

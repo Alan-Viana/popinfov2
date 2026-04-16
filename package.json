@@ -1,0 +1,42 @@
+{
+  "name": "popinfo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@vitejs/plugin-react": "^5.1.2",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@supabase/supabase-js": "^2.103.2",
+    "@types/leaflet": "^1.9.21",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "framer-motion": "^12.27.0",
+    "jose": "^6.2.2",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^1.8.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-helmet-async": "^2.0.5",
+    "react-hook-form": "^7.71.1",
+    "react-hot-toast": "^2.6.0",
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^7.11.0",
+    "zod": "^4.3.5"
+  }
+}
