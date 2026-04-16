@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://ndmnatfmwdqjyrvzvahc.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kbW5hdGZtd2Rxanlydnp2YWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1OTg0NTMsImV4cCI6MjA4NDE3NDQ1M30.v2k6AUHC7Glm-C8GK0ej6I358mXC1e_P-bb4eXh-70Y'
+const supabaseUrl = 'https://trrdtunzcyzzjyacyxxd.supabase.co'
+const supabaseAnonKey = 'sb_publishable_D5xl4TJDqARZp9Q4Y1Zpgg_2uKcmZfX'
 
 const isValidSupabaseUrl = (url: string) => {
   try {
@@ -13,12 +13,10 @@ const isValidSupabaseUrl = (url: string) => {
 }
 
 const isValidSupabaseKey = (key: string) => {
-  return key && key.startsWith('ey')
+  return Boolean(key) && (key.startsWith('ey') || key.startsWith('sb_publishable_'))
 }
 
-const isSupabaseConfigured = supabaseUrl && supabaseAnonKey && 
-  supabaseUrl !== 'YOUR_SUPABASE_URL' && 
-  supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY' &&
+const isSupabaseConfigured = supabaseUrl && supabaseAnonKey &&
   isValidSupabaseUrl(supabaseUrl) &&
   isValidSupabaseKey(supabaseAnonKey)
 
@@ -35,3 +33,4 @@ export const supabase = isSupabaseConfigured
   : null
 
 export const isSupabaseEnabled = () => !!supabase
+

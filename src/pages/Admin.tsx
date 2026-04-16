@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Pencil as LuPencil, LogOut as LuLogOut, Plus as LuPlus, Trash2 as LuTrash2, BriefcaseBusiness as LuBriefcase, Download as LuDownload, Copy as LuCopy, Check as LuCheck } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { Helmet } from 'react-helmet-async'
@@ -74,6 +74,7 @@ const compressImage = (file: File): Promise<string> => {
 const Admin = () => {
   const navigate = useNavigate()
   const { isAuthenticated, logout } = useAuth()
+  const hasLoginGate = sessionStorage.getItem('popinfo_admin_access') === '1'
   
   const [services, setServices] = useState<ServiceLocation[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -187,25 +188,38 @@ const Admin = () => {
   }
 
   const saveService = async (service: Omit<ServiceLocation, 'id'>) => {
-    const token = sessionStorage.getItem('popinfo_admin_token') || ''
-    const created = await createService(service, token)
-    setServices(prev => [created, ...prev])
-    toast.success('Serviço criado')
+    try {
+      const created = await createService(service)
+      setServices(prev => [created, ...prev])
+      toast.success('Serviço criado')
+      return true
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Falha ao criar serviço')
+      return false
+    }
   }
 
   const updateExistingService = async (id: string, patch: Partial<ServiceLocation>) => {
-    const token = sessionStorage.getItem('popinfo_admin_token') || ''
-    const updated = await updateService(id, patch, token)
-    setServices(prev => prev.map(s => (s.id === id ? updated : s)))
-    toast.success('Serviço atualizado')
+    try {
+      const updated = await updateService(id, patch)
+      setServices(prev => prev.map(s => (s.id === id ? updated : s)))
+      toast.success('Serviço atualizado')
+      return true
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Falha ao atualizar serviço')
+      return false
+    }
   }
 
   const deleteExistingService = async (id: string) => {
     if (!window.confirm('Tem certeza que deseja excluir este serviço?')) return
-    const token = sessionStorage.getItem('popinfo_admin_token') || ''
-    await deleteService(id, token)
-    setServices(prev => prev.filter(s => s.id !== id))
-    toast.success('Serviço excluído')
+    try {
+      await deleteService(id)
+      setServices(prev => prev.filter(s => s.id !== id))
+      toast.success('Serviço excluído')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Falha ao excluir serviço')
+    }
   }
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -330,7 +344,7 @@ const Admin = () => {
     })
   }
 
-  const handleServiceSubmit = (e: React.FormEvent) => {
+  const handleServiceSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     
@@ -359,13 +373,13 @@ const Admin = () => {
       imagemUrl: serviceForm.imagemUrl || undefined
     }
 
-    if (editingId) {
-      updateExistingService(editingId, base)
-      setEditingId(null)
-    } else {
-      saveService(base)
-    }
+    const success = editingId
+      ? await updateExistingService(editingId, base)
+      : await saveService(base)
 
+    if (!success) return
+
+    setEditingId(null)
     setServiceForm({
       name: '',
       type: 'Outro',
@@ -388,14 +402,15 @@ const Admin = () => {
   }
 
   const handleLogout = () => {
+    sessionStorage.removeItem('popinfo_admin_access')
     logout()
     navigate('/')
   }
 
-  if (!isAuthenticated) return null
+  if (!hasLoginGate || !isAuthenticated) return <Navigate to="/login" replace />
 
   return (
-    <div className="pt-32 pb-20 bg-[#F8FAFC] dark:bg-slate-900 flex-grow w-full">
+    <div className="pt-32 pb-20 bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
       <Helmet>
         <title>Área Administrativa - PopInfo</title>
       </Helmet>
@@ -558,7 +573,7 @@ const Admin = () => {
 
       <AnimatePresence>
         {showExportModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -580,7 +595,7 @@ const Admin = () => {
                 </button>
               </div>
               
-              <div className="flex-grow overflow-auto p-6 bg-slate-50 dark:bg-slate-900/50">
+              <div className="grow overflow-auto p-6 bg-slate-50 dark:bg-slate-900/50">
                 <pre className="text-xs font-mono text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
                   {getExportData()}
                 </pre>
@@ -610,3 +625,4 @@ const Admin = () => {
 }
 
 export default Admin
+

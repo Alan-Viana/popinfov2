@@ -195,7 +195,7 @@ const ServicoDetalhes = () => {
 
   if (loading) {
     return (
-      <div className="flex-grow w-full flex items-center justify-center bg-[#F8FAFC] dark:bg-slate-900">
+      <div className="grow w-full flex items-center justify-center bg-[#F8FAFC] dark:bg-slate-900">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     )
@@ -223,7 +223,7 @@ const ServicoDetalhes = () => {
   }
 
   return (
-    <div className="pt-32 pb-40 bg-[#F8FAFC] dark:bg-slate-900 flex-grow w-full">
+    <div className="pt-32 pb-40 bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
       <Helmet>
         <title>{service.name} - PopInfo</title>
         <meta name="description" content={`Detalhes sobre ${service.name}`} />
@@ -504,3 +504,4 @@ const ServicoDetalhes = () => {
 }
 
 export default ServicoDetalhes
+

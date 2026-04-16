@@ -22,3 +22,4 @@ export const copyToClipboard = async (text: string) => {
     return false
   }
 }
+

@@ -1,53 +1,32 @@
-# PopInfo — Alan Viana
+# PopInfo — Hub Socioassistencial
 
-Este é o repositório do meu projeto PopInfo, um hub socioassistencial para listar serviços, contatos e informações de atendimento, com foco em navegação rápida, mapa e compartilhamento.
+O PopInfo é uma plataforma centralizadora de informações socioassistenciais, desenvolvida para facilitar o acesso de cidadãos e profissionais da rede aos serviços, contatos e locais de atendimento em São Paulo.
 
-## Tecnologias utilizadas
+O projeto nasceu da minha experiência de 8 anos na área social, unindo a necessidade de agilidade no atendimento à tecnologia moderna.
 
-- React + TypeScript
-- Vite
-- Tailwind CSS
-- Framer Motion
-- Leaflet / React-Leaflet
-- Vercel Functions (API)
-- Supabase (Postgres)
+## Tecnologias e Ferramentas
 
-## Funcionalidades
+O projeto utiliza uma stack moderna, com foco em desempenho, tipagem e escalabilidade:
 
-- Catálogo de serviços com busca e filtros
-- Tela de detalhes com horário, contatos (copiar/WhatsApp) e mapa
-- Painel Admin para criar/editar/excluir serviços (persistência no Supabase)
-- Tema claro/escuro
+- Front-end: React + TypeScript
+- Build Tool: Vite
+- Estilização: Tailwind CSS
+- Animações: Framer Motion
+- Mapas: Leaflet e React-Leaflet
+- Backend-as-a-Service: Supabase (PostgreSQL e Auth)
+- Deploy: Vercel
 
-## Como rodar localmente
+## Funcionalidades Principais
 
-```bash
-git clone https://github.com/SEU_USER/SEU_REPO.git
-cd SEU_REPO
-npm install
-npm run dev
-```
+- Busca inteligente com filtros e pesquisa rápida por serviços e categorias.
+- Geolocalização com visualização de unidades de atendimento em mapa interativo.
+- Ações rápidas para copiar contatos e iniciar conversas via WhatsApp.
+- Painel administrativo com CRUD completo para gerenciamento de serviços, exclusivo para administradores.
+- Interface adaptativa com suporte completo aos temas claro e escuro.
 
-## Configuração (Vercel + Supabase)
+## Arquitetura e Segurança
 
-1) No Supabase, rode o schema:
+- Autenticação integrada diretamente ao Supabase Auth no front-end.
+- Validação de administrador via tabela admins no banco de dados, garantindo que apenas usuários autorizados realizem alterações.
+- Proteção de leitura e escrita com Row Level Security (RLS) no Supabase.
 
-- Arquivo: supabase/schema.sql
-
-2) No Vercel (Project → Settings → Environment Variables), defina:
-
-- SUPABASE_URL
-- SUPABASE_SERVICE_ROLE_KEY
-- ADMIN_EMAIL
-- ADMIN_PASSWORD
-- ADMIN_JWT_SECRET
-
-Se o Vercel reclamar de versão do Node, ajuste em:
-
-- Project → Settings → General → Node.js Version: 20.x
-
-3) Faça deploy no Vercel e teste:
-
-- /api/services
-- /login
-- /admin

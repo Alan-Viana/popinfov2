@@ -15,7 +15,7 @@ const Footer = () => {
         <div className="text-xs text-slate-500 dark:text-slate-500 text-center flex flex-col sm:flex-row items-center gap-2">
           <span>por Alan Viana • Projeto de portfólio</span>
           <span className="hidden sm:inline">•</span>
-          <span>© 2026 • v1.0</span>
+          <span>© 2026 • v2.0</span>
         </div>
       </div>
     </footer>
@@ -23,3 +23,4 @@ const Footer = () => {
 }
 
 export default Footer
+

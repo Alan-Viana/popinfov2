@@ -11,8 +11,8 @@ import Footer from './components/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
 import ScrollToTop from './components/ScrollToTop'
 import Loading from './components/Loading'
+import Home from './pages/Home'
 
-const Home = lazy(() => import('./pages/Home'))
 const Servicos = lazy(() => import('./pages/Servicos'))
 const Sobre = lazy(() => import('./pages/Sobre'))
 const Contato = lazy(() => import('./pages/Contato'))
@@ -90,7 +90,7 @@ function App() {
                 }} 
               />
               <Header />
-              <main id="main-content" className="flex-grow flex flex-col">
+              <main id="main-content" className="grow flex flex-col">
                 <Suspense fallback={<Loading />}>
                   <Routes>
                     <Route path="/" element={<Home />} />
@@ -121,3 +121,4 @@ function App() {
 }
 
 export default App
+

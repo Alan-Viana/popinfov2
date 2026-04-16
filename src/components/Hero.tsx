@@ -99,7 +99,6 @@ const Hero = () => {
         }} />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#F8FAFC]/10 to-[#F8FAFC] dark:via-slate-950/10 dark:to-slate-900" />
       </div>
-      {/* Background Blobs */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[20%] w-[500px] h-[500px] bg-blue-500/5 dark:bg-blue-600/5 rounded-full blur-[120px] animate-blob" />
         <div className="absolute bottom-[10%] left-[20%] w-[400px] h-[400px] bg-[#6F8ABF]/10 dark:bg-[#6F8ABF]/10 rounded-full blur-[120px] animate-blob animation-delay-2000" />
@@ -174,3 +173,4 @@ const Hero = () => {
 }
 
 export default Hero
+

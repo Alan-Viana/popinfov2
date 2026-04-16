@@ -100,6 +100,26 @@ const Header = () => {
     return false
   }
 
+  const handleNavClick = (path: string) => {
+    if (path === '/#categorias') {
+      setIsMenuOpen(false)
+
+      if (location.pathname === '/') {
+        requestAnimationFrame(() => {
+          const el = document.getElementById('categorias')
+          el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        })
+        return
+      }
+
+      navigate('/#categorias')
+      return
+    }
+
+    setIsMenuOpen(false)
+    navigate(path)
+  }
+
   const navLinks = [
     { path: '/',
     label: 'Início',
@@ -153,12 +173,14 @@ const Header = () => {
               alt="Logo PopInfo" 
               className="w-12 h-12 md:w-14 md:h-14 rounded-xl shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 object-cover dark:brightness-0 dark:invert dark:shadow-none"
             />
-            <div className={`text-3xl font-extrabold tracking-tight bg-gradient-to-br from-slate-800 to-blue-600 bg-clip-text text-transparent transition-opacity duration-300 dark:text-white dark:bg-none group-hover:opacity-80`}>
+            <div
+              className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent transition-opacity duration-300 dark:text-white dark:bg-none group-hover:opacity-80"
+              style={{ backgroundImage: 'linear-gradient(to bottom right, #1e293b, #2563eb)' }}
+            >
               PopInfo
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex flex-1 justify-center gap-10 items-center">
             {navLinks.map((link) => (
               <Link
@@ -175,7 +197,6 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Actions */}
           <div className="hidden md:flex items-center gap-4">
             <button
               onClick={toggleTheme}
@@ -231,7 +252,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -253,7 +273,12 @@ const Header = () => {
                   >
                     <Link
                       to={link.path}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={(event) => {
+                        if (link.path === '/#categorias') {
+                          event.preventDefault()
+                        }
+                        handleNavClick(link.path)
+                      }}
                       className={`group flex items-center gap-4 w-full px-6 py-4 rounded-2xl transition-all duration-300 ${
                         isActive(link.path)
                           ? 'bg-[#183F8C] text-white shadow-md'
@@ -317,3 +342,4 @@ const Header = () => {
 }
 
 export default Header
+

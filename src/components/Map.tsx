@@ -83,3 +83,4 @@ const Map = ({ locations, center = [-23.5505, -46.6333], zoom = 12, heightClassN
 }
 
 export default Map
+

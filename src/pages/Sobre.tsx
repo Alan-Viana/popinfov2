@@ -4,7 +4,7 @@ import FadeIn from '../components/FadeIn'
 
 const Sobre = () => {
   return (
-    <div className="pt-32 pb-20 bg-[#F8FAFC] dark:bg-slate-900 flex-grow w-full">
+    <div className="pt-32 pb-20 bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
       <Helmet>
         <title>Sobre o Projeto - PopInfo</title>
         <meta name="description" content="Saiba mais sobre o PopInfo, a missão de conectar pessoas a serviços essenciais e os valores de transparência e inclusão." />
@@ -78,3 +78,4 @@ const Sobre = () => {
 }
 
 export default Sobre
+

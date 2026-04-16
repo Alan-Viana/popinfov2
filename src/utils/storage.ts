@@ -45,3 +45,4 @@ export const deleteStoredService = (id: string) => {
   saveStoredServices(filtered)
   return filtered
 }
+

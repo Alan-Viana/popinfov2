@@ -77,7 +77,7 @@ const Contato = () => {
   }
 
   return (
-    <div className="bg-[#F8FAFC] dark:bg-slate-900 flex-grow w-full">
+    <div className="bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
       <Helmet>
         <title>Contato - PopInfo</title>
         <meta name="description" content="Entre em contato com a equipe do PopInfo. Envie suas dúvidas, sugestões ou reclamações." />
@@ -239,3 +239,4 @@ const Contato = () => {
 }
 
 export default Contato
+

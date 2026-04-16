@@ -17,3 +17,4 @@ const WhatsAppIcon = ({ size = 24, ...props }: Props) => {
 }
 
 export default WhatsAppIcon
+

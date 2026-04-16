@@ -29,6 +29,7 @@ const Login = () => {
     const result = await login(data.email.trim(), data.password.trim())
 
     if (result.success) {
+      sessionStorage.setItem('popinfo_admin_access', '1')
       navigate('/admin')
     } else {
       setError(result.error || 'E-mail ou senha inválidos')
@@ -36,7 +37,7 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center pt-24 pb-20 bg-[#F8FAFC] dark:bg-slate-900 flex-grow w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center pt-24 pb-20 bg-[#F8FAFC] dark:bg-slate-900 w-full">
       <Helmet>
         <title>Login - PopInfo</title>
         <meta name="description" content="Acesso restrito para administradores do PopInfo." />
@@ -103,3 +104,4 @@ const Login = () => {
 }
 
 export default Login
+

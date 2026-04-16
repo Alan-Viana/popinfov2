@@ -86,7 +86,7 @@ const Servicos = () => {
   }, [filteredServices])
 
   return (
-    <div className="pt-32 pb-20 bg-[#F8FAFC] dark:bg-slate-900 flex-grow w-full">
+    <div className="pt-32 pb-20 bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
       <Helmet>
         <title>Rede Socioassistencial - PopInfo</title>
         <meta name="description" content="Encontre serviços da rede socioassistencial, saúde, educação e moradia em São Paulo. Consulte endereços e contatos." />
@@ -106,7 +106,7 @@ const Servicos = () => {
             <div className="flex flex-col gap-6">
               
               <div className="flex flex-col md:flex-row gap-4">
-                <div className="relative flex-grow">
+                <div className="relative grow">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <LuSearch size={18} strokeWidth={1.5} className="text-slate-400 dark:text-slate-500" />
                   </div>
@@ -166,7 +166,6 @@ const Servicos = () => {
           </div>
         </div>
 
-        {/* Results */}
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {filteredServices.map((service) => (
             <li key={service.id}>
@@ -206,10 +205,10 @@ const ServiceCard = ({ service }: { service: ServiceLocation }) => {
           openDetails()
         }
       }}
-      className="bg-white dark:bg-slate-900 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] transition-all duration-300 border border-blue-300/80 md:border-slate-100/80 dark:border-slate-800 hover:-translate-y-2 h-full flex flex-col group relative block text-center cursor-pointer overflow-hidden"
+      className="bg-white dark:bg-slate-900 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] transition-all duration-300 border border-blue-300/80 md:border-slate-100/80 dark:border-slate-800 hover:-translate-y-2 h-full flex flex-col group relative text-center cursor-pointer overflow-hidden"
       aria-label={`Ver detalhes de ${service.name}`}
     >
-      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#183F8C] to-[#6F8ABF] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+      <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#183F8C] to-[#6F8ABF] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
       <div className="p-6 md:p-8 flex-1 flex flex-col items-center text-center">
         <div className="flex flex-col mb-6">
           <div className="flex items-center justify-center gap-3 mb-4">
@@ -263,4 +262,5 @@ const ServiceCard = ({ service }: { service: ServiceLocation }) => {
 }
 
 export default Servicos
+
 
