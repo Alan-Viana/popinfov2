@@ -13,7 +13,7 @@ const Footer = () => {
           <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white group-hover:opacity-80 transition-opacity duration-300">PopInfo</span>
         </Link>
         <div className="text-xs text-slate-500 dark:text-slate-500 text-center flex flex-col sm:flex-row items-center gap-2">
-          <span>por Alan Viana • Projeto de portfólio</span>
+          <span>Projeto de portfólio</span>
           <span className="hidden sm:inline">•</span>
           <span>© 2026 • v2.0</span>
         </div>

@@ -1,5 +1,18 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.example.*
+.env.local
+.env.development
+.env.production
+.env.test
+.env.staging
+
+# Dependencies
+node_modules/
+
 # Logs
-logs
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,28 +20,43 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-.env
-.env.*
-!.env.example
+# Build output
+dist/
+build/
+dist-ssr/
+coverage/
+.vite/
 
-.vite
-coverage
+# Tool caches
 *.tsbuildinfo
 .eslintcache
-.cache
-.parcel-cache
-.turbo
-.pnpm-store
+.cache/
+.parcel-cache/
+.turbo/
+.pnpm-store/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# IDE and editor files
+.vscode/
+.idea/
+.fleet/
+*.code-workspace
+
+# OS files
 .DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local configuration files
+*.local
+*.local.*
+*.local.json
+*.local.yaml
+*.local.yml
+*.local.ini
+*.local.toml
+*.override
+
+# Generated files and miscellaneous
 *.suo
 *.ntvs*
 *.njsproj

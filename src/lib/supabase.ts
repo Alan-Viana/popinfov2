@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
+import type { Database } from '../types/database.types'
 
-const supabaseUrl = 'https://trrdtunzcyzzjyacyxxd.supabase.co'
-const supabaseAnonKey = 'sb_publishable_D5xl4TJDqARZp9Q4Y1Zpgg_2uKcmZfX'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim() ?? ''
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim() ?? ''
 
 const isValidSupabaseUrl = (url: string) => {
   try {
@@ -16,7 +17,7 @@ const isValidSupabaseKey = (key: string) => {
   return Boolean(key) && (key.startsWith('ey') || key.startsWith('sb_publishable_'))
 }
 
-const isSupabaseConfigured = supabaseUrl && supabaseAnonKey &&
+const isSupabaseConfigured = Boolean(supabaseUrl) && Boolean(supabaseAnonKey) &&
   isValidSupabaseUrl(supabaseUrl) &&
   isValidSupabaseKey(supabaseAnonKey)
 
@@ -29,8 +30,7 @@ if (supabaseAnonKey && !isValidSupabaseKey(supabaseAnonKey)) {
 }
 
 export const supabase = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient<Database>(supabaseUrl, supabaseAnonKey)
   : null
 
 export const isSupabaseEnabled = () => !!supabase
-

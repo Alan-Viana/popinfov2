@@ -8,7 +8,6 @@ import {
   List as LuList, 
   MapPin as LuMapPin, 
   Phone as LuPhone, 
-  Mail as LuMail, 
   MessageCircle as LuMessageCircle, 
   Share2 as LuShare2, 
   Copy as LuCopy, 
@@ -20,15 +19,15 @@ import { toast } from 'react-hot-toast'
 import FadeIn from '../components/FadeIn'
 import Map from '../components/Map'
 import WhatsAppIcon from '../components/WhatsAppIcon'
-import { servicesData, type ServiceLocation } from '../data/services'
+import { servicesData, type PublicServiceLocation, toPublicServiceLocation } from '../data/services'
 import { copyToClipboard } from '../utils/clipboard'
 import { getStoredServices } from '../utils/storage'
-import { fetchServiceById } from '../api/services'
+import { fetchPublicServiceById } from '../api/services'
 
 const ServicoDetalhes = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [service, setService] = useState<ServiceLocation | null>(null)
+  const [service, setService] = useState<PublicServiceLocation | null>(null)
   const [loading, setLoading] = useState(true)
   const [showShareMenu, setShowShareMenu] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 })
@@ -99,7 +98,7 @@ const ServicoDetalhes = () => {
     }
   }
 
-  const handleShare = (platform: 'whatsapp' | 'telegram' | 'email') => {
+  const handleShare = (platform: 'whatsapp' | 'telegram') => {
     const text = `Confira este serviço no PopInfo: ${service?.name}\nEndereço: ${service?.address}\nMais detalhes em: ${window.location.href}`
     let url = ''
     
@@ -107,8 +106,6 @@ const ServicoDetalhes = () => {
       url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`
     } else if (platform === 'telegram') {
       url = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(text)}`
-    } else if (platform === 'email') {
-      url = `mailto:?subject=${encodeURIComponent(`PopInfo: ${service?.name}`)}&body=${encodeURIComponent(text)}`
     }
     
     if (url) {
@@ -159,7 +156,7 @@ const ServicoDetalhes = () => {
       setLoading(true)
 
       try {
-        const remote = await fetchServiceById(searchId)
+        const remote = await fetchPublicServiceById(searchId)
         if (cancelled) return
         setService(remote)
         setLoading(false)
@@ -170,7 +167,7 @@ const ServicoDetalhes = () => {
 
       const staticService = servicesData.find(s => String(s.id) === searchId)
       if (staticService) {
-        setService(staticService)
+        setService(toPublicServiceLocation(staticService))
         setLoading(false)
         return
       }
@@ -178,7 +175,7 @@ const ServicoDetalhes = () => {
       const userServices = getStoredServices()
       const userService = userServices.find(s => String(s.id) === searchId)
       if (userService) {
-        setService(userService)
+        setService(toPublicServiceLocation(userService))
         setLoading(false)
         return
       }
@@ -258,7 +255,7 @@ const ServicoDetalhes = () => {
 
               {showShareMenu && createPortal(
                 <div 
-                  className="fixed z-[9999]" 
+                  className="fixed z-9999"
                   style={{ top: menuPosition.top, left: menuPosition.left }}
                   ref={shareMenuRef}
                 >
@@ -282,13 +279,6 @@ const ServicoDetalhes = () => {
                       >
                         <LuSend size={18} className="text-blue-500" />
                         Telegram
-                      </button>
-                      <button 
-                        onClick={() => handleShare('email')}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-600 rounded-xl transition-colors"
-                      >
-                        <LuMail size={18} className="text-amber-600" />
-                        E-mail
                       </button>
                       <div className="h-px bg-slate-100 dark:bg-slate-700 my-1 mx-2" />
                       <button 
@@ -377,7 +367,7 @@ const ServicoDetalhes = () => {
                             <LuPhone size={14} strokeWidth={1.5} className="text-slate-500 dark:text-slate-400" />
                             Telefone
                           </p>
-                          <a href={`tel:${service.phone}`} className="text-2xl font-bold text-slate-800 dark:text-slate-100 hover:text-[#183F8C] dark:hover:text-[#6F8ABF] transition-colors break-words">
+                          <a href={`tel:${service.phone}`} className="text-2xl font-bold text-slate-800 dark:text-slate-100 hover:text-[#183F8C] dark:hover:text-[#6F8ABF] transition-colors wrap-break-word">
                             {service.phone}
                           </a>
                           {isMobilePhone(service.phone) && (
@@ -395,26 +385,6 @@ const ServicoDetalhes = () => {
                         </div>
                       )}
 
-                      {service.email && (
-                        <div className="ui-card-muted w-full p-7 flex flex-col items-center justify-center text-center gap-y-4 relative">
-                          <button
-                            type="button"
-                            onClick={() => copyText(service.email, 'E-mail copiado!')}
-                            className="absolute top-4 right-4 inline-flex items-center justify-center h-9 w-9 rounded-xl bg-white/60 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-colors"
-                            aria-label="Copiar e-mail"
-                            title="Copiar e-mail"
-                          >
-                            <LuCopy size={18} strokeWidth={1.5} />
-                          </button>
-                          <p className="inline-flex items-center justify-center gap-2 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
-                            <LuMail size={14} strokeWidth={1.5} className="text-slate-500 dark:text-slate-400" />
-                            E-mail
-                          </p>
-                          <a href={`mailto:${service.email}`} className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 hover:text-[#183F8C] dark:hover:text-[#6F8ABF] transition-colors truncate w-full">
-                            {service.email}
-                          </a>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -422,7 +392,7 @@ const ServicoDetalhes = () => {
 
               <div className="w-full md:w-5/12 h-full">
                 <div className="ui-card h-full p-7">
-                <div className="flex items-center gap-4 mb-5">
+                <div className="flex flex-col items-center justify-center gap-3 mb-5 text-center">
                   <div className="ui-icon-box text-[#183F8C] dark:text-[#6F8ABF] dark:bg-slate-800/40">
                     <LuMapPin size={30} strokeWidth={1.5} />
                   </div>
@@ -452,14 +422,14 @@ const ServicoDetalhes = () => {
                     rel="noopener noreferrer"
                     className="ui-btn-primary"
                   >
-                    <LuExternalLink size={18} strokeWidth={1.5} className="flex-shrink-0" />
+                    <LuExternalLink size={18} strokeWidth={1.5} className="shrink-0" />
                     Abrir no Google Maps
                   </a>
                 </div>
 
                 {service.imagemUrl && (
                   <div className="ui-card-muted mt-5 overflow-hidden">
-                    <div className="w-full h-[140px] sm:h-[180px] bg-transparent flex items-center justify-center">
+                    <div className="w-full h-35 sm:h-45 bg-transparent flex items-center justify-center">
                       <img
                         src={service.imagemUrl}
                         alt={`Imagem de ${service.name}`}
@@ -488,7 +458,7 @@ const ServicoDetalhes = () => {
               <div className="flex flex-wrap gap-3 justify-center">
                 {service.services_offered.map((item, index) => (
                   <div key={index} className={`flex items-center gap-2 px-4 py-2.5 rounded-full border shadow-sm ${getServiceBadgeClassName(index)}`}>
-                    <div className="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0"></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-current shrink-0"></div>
                     <span className="font-semibold">{item}</span>
                   </div>
                 ))}
