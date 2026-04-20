@@ -48,7 +48,12 @@ const Contato = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'alanviana0707@gmail.com'
+      const contactEmail = import.meta.env.VITE_CONTACT_EMAIL
+
+      if (!contactEmail) {
+        throw new Error('VITE_CONTACT_EMAIL não configurado')
+      }
+
       const response = await fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
         method: 'POST',
         headers: { 
@@ -122,7 +127,7 @@ const Contato = () => {
                     </div>
                     {errors.nome && (
                       <div id="nome-error" role="alert" className="flex items-center gap-2 mt-2 text-red-600 dark:text-red-400 text-sm font-medium animate-fadeIn">
-                        <LuTriangle className="flex-shrink-0" />
+                        <LuTriangle className="shrink-0" />
                         <span>{errors.nome.message}</span>
                       </div>
                     )}
@@ -196,7 +201,7 @@ const Contato = () => {
                         errors.mensagem 
                           ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' 
                           : 'border-slate-300 dark:border-slate-800 focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'
-                      } bg-white dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 resize-y min-h-[170px] shadow-sm`}  
+                      } bg-white dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 resize-y min-h-42.5 shadow-sm`}  
                       placeholder="Descreva detalhadamente sua dúvida, sugestão ou solicitação..."
                       aria-invalid={!!errors.mensagem}
                       aria-describedby={errors.mensagem ? "mensagem-error" : undefined}
@@ -204,7 +209,7 @@ const Contato = () => {
                   </div>
                   {errors.mensagem && (
                     <div id="mensagem-error" role="alert" className="flex items-center gap-2 mt-2 text-red-600 dark:text-red-400 text-sm font-medium animate-fadeIn">
-                      <LuTriangle className="flex-shrink-0" />
+                      <LuTriangle className="shrink-0" />
                       <span>{errors.mensagem.message}</span>
                     </div>
                   )}

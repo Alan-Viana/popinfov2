@@ -22,5 +22,12 @@ export interface ServiceLocation {
   imagemUrl?: string;
 }
 
+export type PublicServiceLocation = Omit<ServiceLocation, 'email'>
+
+export const toPublicServiceLocation = (service: ServiceLocation): PublicServiceLocation => {
+  const { email: _email, ...publicService } = service
+  return publicService
+}
+
 export const servicesData: ServiceLocation[] = initialServices as ServiceLocation[];
 

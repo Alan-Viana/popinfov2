@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUp as LuArrowUp } from 'lucide-react'
 import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
+import ErrorBoundary from './components/ErrorBoundary'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -70,50 +71,52 @@ function App() {
     <HelmetProvider>
       <AuthProvider>
         <ThemeProvider>
-          <Router>
-            <ScrollToTop />
-            <div className="min-h-screen flex flex-col">
-              <Toaster 
-                position="top-right"
-                toastOptions={{
-                  duration: 3000,
-                  style: {
-                    background: '#333',
-                    color: '#fff',
-                  },
-                  success: {
-                    iconTheme: {
-                      primary: '#10B981',
-                      secondary: 'white',
+          <ErrorBoundary>
+            <Router>
+              <ScrollToTop />
+              <div className="min-h-screen flex flex-col">
+                <Toaster 
+                  position="top-right"
+                  toastOptions={{
+                    duration: 3000,
+                    style: {
+                      background: '#333',
+                      color: '#fff',
                     },
-                  },
-                }} 
-              />
-              <Header />
-              <main id="main-content" className="grow flex flex-col">
-                <Suspense fallback={<Loading />}>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/servicos" element={<Servicos />} />
-                    <Route path="/servicos/:id" element={<ServicoDetalhes />} />
-                    <Route path="/sobre" element={<Sobre />} />
-                    <Route path="/contato" element={<Contato />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route
-                      path="/admin"
-                      element={
-                        <ProtectedRoute>
-                          <Admin />
-                        </ProtectedRoute>
-                      }
-                    />
-                  </Routes>
-                </Suspense>
-              </main>
-              <Footer />
-              <BackToTopButton />
-            </div>
-          </Router>
+                    success: {
+                      iconTheme: {
+                        primary: '#10B981',
+                        secondary: 'white',
+                      },
+                    },
+                  }} 
+                />
+                <Header />
+                <main id="main-content" className="grow flex flex-col">
+                  <Suspense fallback={<Loading />}>
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/servicos" element={<Servicos />} />
+                      <Route path="/servicos/:id" element={<ServicoDetalhes />} />
+                      <Route path="/sobre" element={<Sobre />} />
+                      <Route path="/contato" element={<Contato />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route
+                        path="/admin"
+                        element={
+                          <ProtectedRoute>
+                            <Admin />
+                          </ProtectedRoute>
+                        }
+                      />
+                    </Routes>
+                  </Suspense>
+                </main>
+                <Footer />
+                <BackToTopButton />
+              </div>
+            </Router>
+          </ErrorBoundary>
         </ThemeProvider>
       </AuthProvider>
     </HelmetProvider>

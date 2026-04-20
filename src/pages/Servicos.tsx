@@ -4,18 +4,35 @@ import { Helmet } from 'react-helmet-async'
 import { MapPin as LuMapPin, Phone as LuPhone, Clock3 as LuClock, Search as LuSearch, Map as LuMap } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import FadeIn from '../components/FadeIn'
-import Map from '../components/Map'
-import { servicesData, type ServiceLocation } from '../data/services'
+import ServicesMap from '../components/Map'
+import { servicesData, type PublicServiceLocation, toPublicServiceLocation } from '../data/services'
 import { getStoredServices } from '../utils/storage'
-import { fetchServices } from '../api/services'
+import { fetchPublicServicesPage } from '../api/services'
+
+const PAGE_SIZE = 12
+
+const mergeServiceRecords = (existing: PublicServiceLocation, incoming: PublicServiceLocation) => ({
+  ...existing,
+  ...incoming,
+  number: incoming.number ?? existing.number,
+  complement: incoming.complement ?? existing.complement,
+  operatingDays: incoming.operatingDays ?? existing.operatingDays,
+  imagemUrl: incoming.imagemUrl ?? existing.imagemUrl,
+  lat: incoming.lat ?? existing.lat,
+  lng: incoming.lng ?? existing.lng,
+  services_offered: incoming.services_offered.length > 0 ? incoming.services_offered : existing.services_offered
+})
 
 const Servicos = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
   const typeParam = searchParams.get('type')
   const [selectedType, setSelectedType] = useState<string>(typeParam || 'Todos')
-  const [userServices, setUserServices] = useState<ServiceLocation[]>([])
-  const [remoteServices, setRemoteServices] = useState<ServiceLocation[] | null>(null)
+  const [userServices, setUserServices] = useState<PublicServiceLocation[]>([])
+  const [remoteServices, setRemoteServices] = useState<PublicServiceLocation[] | null>(null)
+  const [page, setPage] = useState(0)
+  const [hasMore, setHasMore] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [showMap, setShowMap] = useState(false)
 
   useEffect(() => {
@@ -25,24 +42,69 @@ const Servicos = () => {
   }, [typeParam])
 
   useEffect(() => {
-    setUserServices(getStoredServices())
+    setUserServices(getStoredServices().map(toPublicServiceLocation))
   }, [])
 
   useEffect(() => {
     let cancelled = false
-    fetchServices()
-      .then((data) => {
+
+    const loadPage = async () => {
+      setIsLoadingMore(true)
+      try {
+        const data = await fetchPublicServicesPage(page, PAGE_SIZE)
         if (cancelled) return
-        setRemoteServices(data)
-      })
-      .catch(() => {
+
+        setRemoteServices(prev => {
+          if (page === 0) return data
+          const merged = [...(prev || []), ...data]
+          return Array.from(new Map(merged.map(service => [service.id, service])).values())
+        })
+        setHasMore(data.length === PAGE_SIZE)
+      } catch {
         if (cancelled) return
-        setRemoteServices(null)
-      })
+        setRemoteServices(prev => (page === 0 ? null : prev))
+        setHasMore(false)
+      } finally {
+        if (!cancelled) setIsLoadingMore(false)
+      }
+    }
+
+    void loadPage()
+
     return () => {
       cancelled = true
     }
   }, [])
+
+  useEffect(() => {
+    if (page === 0) return
+
+    let cancelled = false
+
+    const loadMore = async () => {
+      setIsLoadingMore(true)
+      try {
+        const data = await fetchPublicServicesPage(page, PAGE_SIZE)
+        if (cancelled) return
+
+        setRemoteServices(prev => {
+          const merged = [...(prev || []), ...data]
+          return Array.from(new Map(merged.map(service => [service.id, service])).values())
+        })
+        setHasMore(data.length === PAGE_SIZE)
+      } catch {
+        if (!cancelled) setHasMore(false)
+      } finally {
+        if (!cancelled) setIsLoadingMore(false)
+      }
+    }
+
+    void loadMore()
+
+    return () => {
+      cancelled = true
+    }
+  }, [page])
 
   const handleTypeChange = (type: string) => {
     setSelectedType(type)
@@ -55,8 +117,25 @@ const Servicos = () => {
   }
 
   const allServices = useMemo(() => {
-    if (remoteServices) return remoteServices
-    return [...servicesData, ...userServices]
+    const sources = [
+      ...servicesData.map(toPublicServiceLocation),
+      ...userServices,
+      ...(remoteServices || [])
+    ]
+
+    const mergedById = new Map<string, PublicServiceLocation>()
+
+    for (const service of sources) {
+      const previous = mergedById.get(service.id)
+      if (!previous) {
+        mergedById.set(service.id, service)
+        continue
+      }
+
+      mergedById.set(service.id, mergeServiceRecords(previous, service))
+    }
+
+    return Array.from(mergedById.values())
   }, [remoteServices, userServices])
   const uniqueTypes = useMemo(() => ['Todos', ...Array.from(new Set(allServices.map(s => s.type)))], [allServices])
 
@@ -69,6 +148,8 @@ const Servicos = () => {
 
     return matchesSearch && matchesType
   }), [allServices, searchTerm, selectedType])
+
+  const visibleServices = useMemo(() => filteredServices.slice(0, (page + 1) * PAGE_SIZE), [filteredServices, page])
 
   const mapLocations = useMemo(() => {
     return filteredServices
@@ -123,8 +204,8 @@ const Servicos = () => {
                   onClick={() => setShowMap(!showMap)}
                   className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all border ${
                     showMap 
-                      ? 'bg-[#183F8C] text-white border-[#183F8C] shadow-md hover:bg-[#1C4AA6]' 
-                      : 'bg-white dark:bg-transparent text-slate-600 dark:text-slate-300 border-slate-200 dark:border-transparent hover:border-[#6F8ABF]'
+                      ? 'bg-[#183F8C] text-white border-[#183F8C] shadow-md hover:bg-[#1C4AA6] hover:shadow-lg' 
+                      : 'bg-blue-50 text-blue-800 border-blue-200 shadow-sm hover:bg-blue-100 hover:border-blue-300 hover:text-blue-900 dark:bg-slate-800 dark:text-blue-100 dark:border-slate-600 dark:shadow-black/10 dark:hover:bg-slate-700 dark:hover:border-slate-500 dark:hover:text-white'
                   }`}
                 >
                   <LuMap size={18} strokeWidth={1.5} />
@@ -141,7 +222,7 @@ const Servicos = () => {
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <Map locations={mapLocations} />
+                    <ServicesMap locations={mapLocations} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -167,7 +248,7 @@ const Servicos = () => {
         </div>
 
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          {filteredServices.map((service) => (
+          {visibleServices.map((service) => (
             <li key={service.id}>
               <FadeIn>
                 <ServiceCard service={service} />
@@ -176,7 +257,7 @@ const Servicos = () => {
           ))}
         </ul>
 
-        {filteredServices.length === 0 && (
+        {visibleServices.length === 0 && !isLoadingMore && (
           <div className="text-center py-20 text-slate-500 dark:text-slate-300">
             <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
               <LuSearch size={28} strokeWidth={1.5} className="text-slate-300 dark:text-slate-500" />
@@ -185,12 +266,24 @@ const Servicos = () => {
             <p className="mt-2 text-slate-600 dark:text-slate-500">Tente buscar por outros termos ou limpar os filtros.</p>
           </div>
         )}
+
+        {hasMore && visibleServices.length > 0 && (
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={() => setPage(prev => prev + 1)}
+              disabled={isLoadingMore}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#183F8C] text-white font-bold shadow-md hover:bg-[#1C4AA6] disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoadingMore ? 'Carregando...' : 'Carregar mais'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-const ServiceCard = ({ service }: { service: ServiceLocation }) => {
+const ServiceCard = ({ service }: { service: PublicServiceLocation }) => {
   const navigate = useNavigate()
   const openDetails = () => navigate(`/servicos/${service.id}`)
 

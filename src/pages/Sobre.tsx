@@ -1,77 +1,105 @@
 import { Helmet } from 'react-helmet-async'
-import { HandHeart as LuHeartHandshake, MapPin as LuMapPin, Target as LuTarget } from 'lucide-react'
+import { HandHeart as LuHeartHandshake, Eye as LuEye, Heart as LuHeart, Shield as LuShield, MapPin as LuMapPin, Target as LuTarget } from 'lucide-react'
 import FadeIn from '../components/FadeIn'
+
+const values = [
+  {
+    title: 'Transparência',
+    description: 'Informações claras, organizadas e confiáveis para consulta rápida.',
+    icon: LuEye,
+  },
+  {
+    title: 'Inclusão',
+    description: 'Acesso pensado para pessoas em diferentes contextos e necessidades.',
+    icon: LuHeart,
+  },
+  {
+    title: 'Ética',
+    description: 'Compromisso com responsabilidade, cuidado e uso responsável dos dados.',
+    icon: LuShield,
+  },
+  {
+    title: 'Atualização',
+    description: 'Evolução contínua para manter o conteúdo útil e atual.',
+    icon: LuTarget,
+  },
+]
 
 const Sobre = () => {
   return (
-    <div className="pt-32 pb-20 bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
+    <div className="pt-32 pb-24 bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
       <Helmet>
         <title>Sobre o Projeto - PopInfo</title>
         <meta name="description" content="Saiba mais sobre o PopInfo, a missão de conectar pessoas a serviços essenciais e os valores de transparência e inclusão." />
       </Helmet>
-      <div className="text-center max-w-4xl mx-auto px-6 mb-20">
-        <FadeIn>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6 text-slate-900 dark:text-white tracking-tight">Sobre o PopInfo</h1>
-          <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            Uma plataforma dedicada a conectar pessoas aos serviços essenciais de São Paulo
-          </p>
-        </FadeIn>
-      </div>
-
-      <div className="container mx-auto px-6 max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-12">
-        <FadeIn>
-          <div className="bg-white dark:bg-transparent p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-transparent h-full hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-2 text-center relative overflow-hidden group backdrop-blur-sm">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#183F8C] to-[#6F8ABF] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-3xl text-blue-600 dark:text-blue-400 mb-8 mx-auto">
-              <LuHeartHandshake />
-            </div>
-            <h2 className="text-2xl font-bold mb-4 text-slate-900 dark:text-white">Missão</h2>
-            <p className="text-slate-600 dark:text-slate-300 leading-loose text-lg">
-              Facilitar o acesso da população de São Paulo aos serviços públicos essenciais, 
-              promovendo a inclusão social e ampliando o alcance das informações para pessoas em situação de vulnerabilidade.
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="text-center mx-auto max-w-3xl pb-16 md:pb-24">
+          <FadeIn>
+            <h1 className="bg-linear-to-r from-slate-900 to-slate-700 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent md:text-6xl">
+              Sobre o PopInfo
+            </h1>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-300 md:text-xl">
+              Uma plataforma dedicada a conectar pessoas aos serviços essenciais de São Paulo
             </p>
-          </div>
-        </FadeIn>
+          </FadeIn>
+        </div>
 
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <FadeIn>
+            <article className="group h-full rounded-3xl border border-slate-100 bg-white p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md md:p-10 dark:border-slate-800/70 dark:bg-slate-950/30">
+              <div className="mx-auto mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-slate-900 ring-1 ring-slate-100 transition-transform duration-300 group-hover:scale-[1.02] dark:bg-slate-900 dark:text-white dark:ring-slate-800">
+                <LuHeartHandshake />
+              </div>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Missão</h2>
+              <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300 md:text-lg">
+                Facilitar o acesso da população de São Paulo aos serviços públicos essenciais,
+                promovendo a inclusão social e ampliando o alcance das informações para pessoas em situação de vulnerabilidade.
+              </p>
+            </article>
+          </FadeIn>
 
+          <FadeIn>
+            <article className="group h-full rounded-3xl border border-slate-100 bg-white p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md md:p-10 dark:border-slate-800/70 dark:bg-slate-950/30">
+              <div className="mx-auto mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-slate-900 ring-1 ring-slate-100 transition-transform duration-300 group-hover:scale-[1.02] dark:bg-slate-900 dark:text-white dark:ring-slate-800">
+                <LuMapPin />
+              </div>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Abrangência</h2>
+              <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300 md:text-lg">
+                Cobrimos todos os distritos da cidade de São Paulo, oferecendo informações
+                atualizadas sobre serviços disponíveis em cada região. Seja no centro da
+                cidade ou nas periferias, o objetivo é garantir que ninguém fique sem
+                acesso às informações necessárias.
+              </p>
+            </article>
+          </FadeIn>
 
-        <FadeIn>
-          <div className="bg-white dark:bg-transparent p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-transparent h-full hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-2 text-center relative overflow-hidden group backdrop-blur-sm">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#183F8C] to-[#6F8ABF] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-3xl text-blue-600 dark:text-blue-400 mb-8 mx-auto">
-              <LuMapPin />
-            </div>
-            <h2 className="text-2xl font-bold mb-4 text-slate-900 dark:text-white">Abrangência</h2>
-            <p className="text-slate-600 dark:text-slate-300 leading-loose text-lg">
-              Cobrimos todos os distritos da cidade de São Paulo, oferecendo informações 
-              atualizadas sobre serviços disponíveis em cada região. Seja no centro da 
-              cidade ou nas periferias, o objetivo é garantir que ninguém fique sem 
-              acesso às informações necessárias.
-            </p>
-          </div>
-        </FadeIn>
+          <FadeIn className="md:col-span-2">
+            <section className="mt-6 rounded-3xl bg-slate-50 p-8 md:p-10 dark:bg-slate-950/40">
+              <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                {values.map((value) => {
+                  const Icon = value.icon
 
-        <FadeIn className="md:col-span-2">
-          <div className="bg-white dark:bg-transparent p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-transparent h-full hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-2 text-center relative overflow-hidden group backdrop-blur-sm">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#183F8C] to-[#6F8ABF] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-3xl text-blue-600 dark:text-blue-400 mb-8 mx-auto">
-              <LuTarget />
-            </div>
-            <h2 className="text-2xl font-bold mb-4 text-slate-900 dark:text-white">Valores</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-              {[
-                'Transparência e confiabilidade nas informações',
-                'Compromisso com a inclusão social',
-                'Facilidade de acesso e uso',
-                'Atualização constante dos dados'
-              ].map((value, index) => (
-                <div key={index} className="flex items-center justify-center text-center gap-4 text-slate-700 dark:text-slate-200 font-medium bg-slate-50 dark:bg-white/5 p-4 rounded-xl">
-                  <span>{value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </FadeIn>
+                  return (
+                    <div
+                      key={value.title}
+                      className="rounded-2xl border border-slate-100 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800/70 dark:bg-slate-950"
+                    >
+                      <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 text-slate-900 ring-1 ring-slate-100 dark:bg-slate-900 dark:text-white dark:ring-slate-800">
+                        <Icon size={20} strokeWidth={1.75} />
+                      </div>
+                      <h3 className="text-base font-semibold text-slate-900 dark:text-white">
+                        {value.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                        {value.description}
+                      </p>
+                    </div>
+                  )
+                })}
+              </div>
+            </section>
+          </FadeIn>
+        </div>
       </div>
     </div>
   )

@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 interface AuthContextType {
   isAuthenticated: boolean
   isAuthReady: boolean
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  login: (email: string, password: string, captchaToken?: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
 }
 
@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe()
   }, [])
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (email: string, password: string, captchaToken?: string): Promise<{ success: boolean; error?: string }> => {
     if (!supabase) {
       return { success: false, error: 'Supabase não está configurado neste ambiente.' }
     }
@@ -128,6 +128,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: normalizedEmail,
         password: password.trim(),
+        options: captchaToken ? { captchaToken } : undefined,
       })
 
       if (authError) {

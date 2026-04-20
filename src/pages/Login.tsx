@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { Lock as LuLock, LogIn as LuLogIn, Mail as LuMail } from 'lucide-react'
 import FadeIn from '../components/FadeIn'
 import { useAuth } from '../contexts/AuthContext'
+import TurnstileCaptcha from '../components/TurnstileCaptcha'
 
 const loginSchema = z.object({
   email: z.string().trim().email('Digite um e-mail válido'),
@@ -15,10 +16,13 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>
 
+const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY?.trim() ?? ''
+
 const Login = () => {
   const navigate = useNavigate()
   const { login } = useAuth()
   const [error, setError] = useState<string | null>(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema)
@@ -26,13 +30,24 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     setError(null)
-    const result = await login(data.email.trim(), data.password.trim())
+    if (!turnstileSiteKey) {
+      setError('Captcha não configurado. Defina VITE_TURNSTILE_SITE_KEY.')
+      return
+    }
+
+    if (!captchaToken) {
+      setError('Confirme o captcha antes de entrar.')
+      return
+    }
+
+    const result = await login(data.email.trim(), data.password.trim(), captchaToken)
 
     if (result.success) {
       sessionStorage.setItem('popinfo_admin_access', '1')
       navigate('/admin')
     } else {
       setError(result.error || 'E-mail ou senha inválidos')
+      setCaptchaToken(null)
     }
   }
 
@@ -88,9 +103,19 @@ const Login = () => {
 
             {error && <div role="alert" className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm rounded-lg text-center font-medium border border-red-100 dark:border-red-800">{error}</div>}
 
+            <div className="flex justify-center pt-1">
+              {turnstileSiteKey ? (
+                <TurnstileCaptcha siteKey={turnstileSiteKey} onTokenChange={setCaptchaToken} />
+              ) : (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
+                  Configure <span className="font-semibold">VITE_TURNSTILE_SITE_KEY</span> para ativar o captcha.
+                </div>
+              )}
+            </div>
+
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !turnstileSiteKey || !captchaToken}
               className="w-full bg-[#183F8C] text-white font-bold py-3 rounded-xl shadow-lg hover:bg-[#1C4AA6] hover:shadow-xl transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               <LuLogIn />
