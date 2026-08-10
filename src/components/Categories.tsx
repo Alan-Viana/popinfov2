@@ -74,8 +74,8 @@ const Categories = () => {
   }
 
   return (
-    <section id="categorias" className="pb-32 pt-28 bg-[#F8FAFC] dark:bg-slate-900 transition-colors duration-500 relative scroll-mt-28">
-      <div className="pointer-events-none absolute top-0 left-0 w-full h-24 bg-linear-to-b from-[#F8FAFC] to-transparent dark:from-slate-900 dark:to-transparent" />
+    <section id="categorias" className="pb-32 pt-28 bg-[#F8FAFC] dark:bg-[#050505] transition-colors duration-500 relative scroll-mt-28">
+      <div className="pointer-events-none absolute top-0 left-0 w-full h-24 bg-linear-to-b from-[#F8FAFC] to-transparent dark:from-[#050505] dark:to-transparent" />
       <FadeIn>
         <div className="text-center max-w-3xl mx-auto mb-28 px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">Explorar categorias</h2>
@@ -93,16 +93,16 @@ const Categories = () => {
               whileHover={{ y: -6, scale: 1.015 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: "tween", ease: "easeOut", duration: 0.12 }}
-              className="group bg-white dark:bg-slate-900 p-9 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] cursor-pointer border border-blue-300/80 md:border-slate-100/80 dark:border-slate-800 relative overflow-hidden transition-all duration-150 text-left flex flex-col h-full"
+              className="group bg-white dark:bg-[#111111] p-9 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] cursor-pointer border border-blue-300/80 md:border-slate-100/80 dark:border-[#242424] relative overflow-hidden transition-all duration-150 text-left flex flex-col h-full"
             >
               <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#183F8C] to-[#6F8ABF] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-150"></div>
               <div className="flex items-center gap-5 mb-6">
-                <div className="w-14 h-14 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center text-2xl group-hover:bg-blue-50 group-hover:text-blue-600 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors duration-150 border border-slate-100 dark:border-slate-700">
+                <div className="w-14 h-14 rounded-xl bg-slate-50 dark:bg-[#191919] text-slate-700 dark:text-slate-300 flex items-center justify-center text-2xl group-hover:bg-blue-50 group-hover:text-blue-600 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors duration-150 border border-slate-100 dark:border-[#242424]">
                   <Icon size={28} strokeWidth={1.5} />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-150">{category.title}</h3>
               </div>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-base">{category.description}</p>
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-base">{category.description}</p>
             </motion.div>
             </FadeIn>
           )

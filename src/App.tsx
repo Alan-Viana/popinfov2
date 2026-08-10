@@ -57,7 +57,7 @@ function BackToTopButton() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 16, scale: 0.96 }}
           transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-          className="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-2xl bg-[#183F8C] text-white shadow-xl shadow-[#183F8C]/20 hover:bg-[#1C4AA6] hover:shadow-[#183F8C]/30 active:scale-95 transition-colors flex items-center justify-center border border-white/10 dark:bg-slate-900 dark:hover:bg-slate-800 dark:shadow-black/30"
+          className="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-2xl bg-[#183F8C] text-white shadow-xl shadow-[#183F8C]/20 hover:bg-[#1C4AA6] hover:shadow-[#183F8C]/30 active:scale-95 transition-colors flex items-center justify-center border border-white/10 dark:shadow-black/30"
         >
           <LuArrowUp size={20} strokeWidth={1.5} />
         </motion.button>

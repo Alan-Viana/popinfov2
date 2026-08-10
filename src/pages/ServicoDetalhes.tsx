@@ -1,157 +1,58 @@
-import { useEffect, useState, useRef, useMemo } from 'react'
-import { createPortal } from 'react-dom'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { 
-  ArrowLeft as LuArrowLeft, 
-  Clock3 as LuClock, 
-  List as LuList, 
-  MapPin as LuMapPin, 
-  Phone as LuPhone, 
-  MessageCircle as LuMessageCircle, 
-  Share2 as LuShare2, 
-  Copy as LuCopy, 
-  Send as LuSend,
-  ExternalLink as LuExternalLink
+import {
+  ArrowLeft as LuArrowLeft,
+  Clock3 as LuClock,
+  Copy as LuCopy,
+  ExternalLink as LuExternalLink,
+  Info as LuInfo,
+  List as LuList,
+  MapPin as LuMapPin,
+  Phone as LuPhone,
 } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-hot-toast'
 import FadeIn from '../components/FadeIn'
 import Map from '../components/Map'
-import WhatsAppIcon from '../components/WhatsAppIcon'
-import { servicesData, type PublicServiceLocation, toPublicServiceLocation } from '../data/services'
-import { copyToClipboard } from '../utils/clipboard'
-import { getStoredServices } from '../utils/storage'
 import { fetchPublicServiceById } from '../api/services'
+import { servicesData, type PublicServiceLocation, toPublicServiceLocation } from '../data/services'
+import { getStoredServices } from '../utils/storage'
+import { copyToClipboard } from '../utils/clipboard'
 
 const ServicoDetalhes = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [service, setService] = useState<PublicServiceLocation | null>(null)
   const [loading, setLoading] = useState(true)
-  const [showShareMenu, setShowShareMenu] = useState(false)
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 })
-  const shareButtonRef = useRef<HTMLButtonElement>(null)
-  const shareMenuRef = useRef<HTMLDivElement>(null)
 
   const mapLocations = useMemo(() => {
-    if (service && service.lat && service.lng) {
-      return [{
-        id: service.id,
-        name: service.name,
-        lat: service.lat,
-        lng: service.lng,
-        address: service.address,
-        type: service.type,
-        phone: service.phone,
-        hours: service.hours
-      }]
-    }
-    return []
+    if (!service || service.lat === undefined || service.lng === undefined) return []
+
+    return [{
+      id: service.id,
+      name: service.name,
+      lat: service.lat,
+      lng: service.lng,
+      address: service.address,
+      type: service.type,
+      phone: service.phone,
+      hours: service.hours,
+    }]
   }, [service])
 
-  const getServiceBadgeClassName = (index: number) => {
-    const variants = [
-      'bg-blue-100 text-blue-800 border-blue-200',
-      'bg-emerald-100 text-emerald-800 border-emerald-200',
-      'bg-amber-100 text-amber-800 border-amber-200',
-      'bg-indigo-100 text-indigo-800 border-indigo-200',
-      'bg-sky-100 text-sky-800 border-sky-200'
-    ]
-    return `${variants[index % variants.length]} dark:bg-slate-900/30 dark:text-slate-200 dark:border-transparent`
-  }
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (shareMenuRef.current && !shareMenuRef.current.contains(event.target as Node) && 
-          shareButtonRef.current && !shareButtonRef.current.contains(event.target as Node)) {
-        setShowShareMenu(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
-  const updateMenuPosition = () => {
-    if (shareButtonRef.current) {
-      const rect = shareButtonRef.current.getBoundingClientRect()
-      setMenuPosition({
-        top: rect.bottom + window.scrollY + 8,
-        left: rect.right - 208
-      })
-    }
-  }
-
-  const toggleShareMenu = () => {
-    if (navigator.share && !showShareMenu) {
-      navigator.share({
-        title: `PopInfo: ${service?.name}`,
-        text: `Confira este serviço no PopInfo: ${service?.name}\nEndereço: ${service?.address}`,
-        url: window.location.href
-      }).catch(() => {
-        updateMenuPosition()
-        setShowShareMenu(true)
-      })
+  const copyText = async (text: string) => {
+    const copied = await copyToClipboard(text)
+    if (copied) {
+      toast.success('Telefone copiado!')
     } else {
-      updateMenuPosition()
-      setShowShareMenu(!showShareMenu)
-    }
-  }
-
-  const handleShare = (platform: 'whatsapp' | 'telegram') => {
-    const text = `Confira este serviço no PopInfo: ${service?.name}\nEndereço: ${service?.address}\nMais detalhes em: ${window.location.href}`
-    let url = ''
-    
-    if (platform === 'whatsapp') {
-      url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`
-    } else if (platform === 'telegram') {
-      url = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(text)}`
-    }
-    
-    if (url) {
-      const newWindow = window.open(url, '_blank')
-      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-        toast.error('O compartilhamento foi bloqueado pelo seu navegador.')
-      }
-    }
-    setShowShareMenu(false)
-  }
-
-  const copyText = async (text: string, successMessage: string, closeShareMenu = false) => {
-    const ok = await copyToClipboard(text)
-    if (!ok) {
       toast.error('Não foi possível copiar.')
-      return
     }
-
-    toast.success(successMessage)
-    if (closeShareMenu) setShowShareMenu(false)
-  }
-
-  const getWhatsAppLink = (phone: string) => {
-    const cleanPhone = phone.replace(/\D/g, '')
-    const phoneWithCountry = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`
-    const message = `Olá! Vi o serviço "${service?.name}" no PopInfo e gostaria de mais informações.`
-    return `https://api.whatsapp.com/send?phone=${phoneWithCountry}&text=${encodeURIComponent(message)}`
-  }
-
-  const isMobilePhone = (phone: string) => {
-    const digitsOnly = phone.replace(/\D/g, '')
-    if (!digitsOnly) return false
-
-    const withoutCountryCode = digitsOnly.startsWith('55') && digitsOnly.length > 11 ? digitsOnly.slice(2) : digitsOnly
-
-    const localNumber =
-      withoutCountryCode.length === 11 || withoutCountryCode.length === 10
-        ? withoutCountryCode.slice(2)
-        : withoutCountryCode
-
-    return localNumber.length === 9 && localNumber.startsWith('9')
   }
 
   useEffect(() => {
     let cancelled = false
-    const fetchService = async () => {
+
+    const loadService = async () => {
       const searchId = String(id)
       setLoading(true)
 
@@ -159,32 +60,25 @@ const ServicoDetalhes = () => {
         const remote = await fetchPublicServiceById(searchId)
         if (cancelled) return
         setService(remote)
-        setLoading(false)
         return
       } catch {
         if (cancelled) return
       }
 
-      const staticService = servicesData.find(s => String(s.id) === searchId)
+      const staticService = servicesData.find(item => String(item.id) === searchId)
       if (staticService) {
         setService(toPublicServiceLocation(staticService))
-        setLoading(false)
         return
       }
 
-      const userServices = getStoredServices()
-      const userService = userServices.find(s => String(s.id) === searchId)
-      if (userService) {
-        setService(toPublicServiceLocation(userService))
-        setLoading(false)
-        return
-      }
-
-      setService(null)
-      setLoading(false)
+      const storedService = getStoredServices().find(item => String(item.id) === searchId)
+      setService(storedService ? toPublicServiceLocation(storedService) : null)
     }
 
-    fetchService()
+    void loadService().finally(() => {
+      if (!cancelled) setLoading(false)
+    })
+
     return () => {
       cancelled = true
     }
@@ -192,25 +86,25 @@ const ServicoDetalhes = () => {
 
   if (loading) {
     return (
-      <div className="grow w-full flex items-center justify-center bg-[#F8FAFC] dark:bg-slate-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="flex w-full grow items-center justify-center bg-[#F8FAFC] dark:bg-[#050505]">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600" />
       </div>
     )
   }
 
   if (!service) {
     return (
-      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F8FAFC] dark:bg-slate-900 text-center px-6">
-        <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6">
+      <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[#F8FAFC] px-6 text-center dark:bg-[#050505]">
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 dark:bg-[#191919]">
           <LuMapPin size={40} strokeWidth={1.5} className="text-slate-400" />
         </div>
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Serviço não encontrado</h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md">
+        <h2 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white">Serviço não encontrado</h2>
+        <p className="mb-8 max-w-md text-slate-600 dark:text-slate-300">
           O serviço que você está procurando não existe ou foi removido do nosso sistema.
         </p>
-        <button 
+        <button
           onClick={() => navigate('/servicos')}
-          className="flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-md"
+          className="flex items-center gap-2 rounded-xl bg-[#183F8C] px-8 py-3 font-bold text-white shadow-md transition-all hover:bg-[#1C4AA6]"
         >
           <LuArrowLeft size={18} strokeWidth={1.5} />
           Voltar para serviços
@@ -219,259 +113,235 @@ const ServicoDetalhes = () => {
     )
   }
 
+  const fullAddress = `${service.address}${service.number ? `, ${service.number}` : ''}${service.complement ? ` - ${service.complement}` : ''}`
+  const locationLine = `${service.neighborhood}, ${service.city}${service.zip ? ` - CEP: ${service.zip}` : ''}`
+
   return (
-    <div className="pt-32 pb-40 bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
+    <div className="w-full grow bg-[#F8FAFC] pb-24 pt-28 dark:bg-[#050505]">
       <Helmet>
         <title>{service.name} - PopInfo</title>
         <meta name="description" content={`Detalhes sobre ${service.name}`} />
       </Helmet>
-      
-      <div className="container mx-auto px-6 max-w-6xl">
+
+      <div className="mx-auto max-w-7xl px-5 sm:px-6">
         <FadeIn>
-          <div className="flex justify-between items-center mb-8">
-            <button 
-              onClick={() => navigate(-1)}
-              className="group flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all font-bold"
-            >
-              <div className="p-2 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 group-hover:border-blue-200 group-hover:text-blue-600">
-                <LuArrowLeft size={18} strokeWidth={1.5} />
-              </div>
-              <span className="hidden sm:inline">Voltar</span>
-            </button>
-
-            <div className="relative">
-              <button 
-                ref={shareButtonRef}
-                onClick={toggleShareMenu}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-all shadow-sm border ${
-                  showShareMenu 
-                    ? 'bg-[#183F8C] text-white border-[#183F8C]' 
-                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-100 dark:border-slate-700 hover:border-blue-200'
-                }`}
-              >
-                <LuShare2 size={18} />
-                <span>Compartilhar</span>
-              </button>
-
-              {showShareMenu && createPortal(
-                <div 
-                  className="fixed z-9999"
-                  style={{ top: menuPosition.top, left: menuPosition.left }}
-                  ref={shareMenuRef}
-                >
-                  <AnimatePresence>
-                    <motion.div
-                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                      className="w-52 bg-white dark:bg-slate-800 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-slate-100 dark:border-slate-700 p-2 overflow-hidden"
-                    >
-                      <button 
-                        onClick={() => handleShare('whatsapp')}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 rounded-xl transition-colors"
-                      >
-                        <LuMessageCircle size={18} className="text-green-600" />
-                        WhatsApp
-                      </button>
-                      <button 
-                        onClick={() => handleShare('telegram')}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-500 rounded-xl transition-colors"
-                      >
-                        <LuSend size={18} className="text-blue-500" />
-                        Telegram
-                      </button>
-                      <div className="h-px bg-slate-100 dark:bg-slate-700 my-1 mx-2" />
-                      <button 
-                        onClick={() => copyText(window.location.href, 'Link copiado!', true)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors"
-                      >
-                        <LuCopy size={18} className="text-slate-500" />
-                        Copiar Link
-                      </button>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>,
-                document.body
-              )}
-            </div>
-          </div>
-        </FadeIn>
-
-        <FadeIn>
-          <div className="mb-10 text-center max-w-4xl mx-auto">
-            <span className="inline-block text-sm font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[#183F8C] dark:text-[#6F8ABF] border border-slate-200 dark:border-slate-700">
+          <div className="mb-6 text-center">
+            <span className="inline-flex rounded-lg border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-700 dark:border-[#303030] dark:bg-[#191919] dark:text-slate-200">
               {service.type}
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white mb-6 leading-tight tracking-tight mt-5">{service.name}</h1>
-            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
-              {service.description}
-            </p>
           </div>
 
-          <div className="mb-8 max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-stretch gap-6 lg:gap-8">
-              <div className="w-full md:w-7/12 flex flex-col gap-6 h-full">
-                <div className="ui-card p-6 flex-1 min-h-0 flex flex-col items-center justify-center text-center">
-                  <div className="w-full max-w-sm mx-auto flex flex-col items-center justify-center text-center gap-y-4">
-                    <div className="ui-icon-box text-[#183F8C] dark:text-[#6F8ABF]">
-                      <LuClock size={30} strokeWidth={1.5} />
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                      <span className="ui-ink-underline">Horário</span>
-                    </h3>
+          <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+            <section className="lg:col-span-7">
+              <h1 className="mb-5 px-1 text-center text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-4xl md:text-5xl">
+                {service.name}
+              </h1>
 
-                    <div className="ui-card-muted w-full p-6 flex flex-col items-center justify-center text-center gap-y-4">
-                      {service.hours.toLowerCase().includes('24') ? (
-                        <>
-                          <p className="inline-flex items-center justify-center px-3 py-1 rounded-full uppercase text-[11px] tracking-[0.16em] font-bold text-slate-600 dark:text-slate-300 bg-slate-100/80 dark:bg-slate-800/50 border border-slate-200/70 dark:border-transparent mb-3">
-                            Aberto 24h
-                          </p>
-                          <p className="text-2xl font-bold text-slate-800 dark:text-slate-100 leading-tight">24 horas</p>
-                        </>
-                      ) : (
-                        <>
-                          {service.operatingDays && (
-                            <p className="inline-flex items-center justify-center px-3 py-1 rounded-full uppercase text-[11px] tracking-[0.16em] font-bold text-slate-600 dark:text-slate-300 bg-slate-100/80 dark:bg-slate-800/50 border border-slate-200/70 dark:border-transparent mb-3">
-                              {service.operatingDays}
-                            </p>
-                          )}
-                          <p className="text-2xl font-bold text-slate-800 dark:text-slate-100 leading-tight">{service.hours}</p>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="ui-card p-6 flex-1 min-h-0 flex flex-col items-center justify-center text-center">
-                  <div className="w-full max-w-sm mx-auto flex flex-col items-center justify-center text-center gap-y-4">
-                    <div className="ui-icon-box text-[#183F8C] dark:text-[#6F8ABF]">
-                      <LuPhone size={30} strokeWidth={1.5} />
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                      <span className="ui-ink-underline">Contatos</span>
-                    </h3>
-
-                    <div className="w-full flex flex-col items-center justify-center text-center gap-y-4">
-                      {service.phone && (
-                        <div className="ui-card-muted w-full p-7 flex flex-col items-center justify-center text-center gap-y-4 relative">
-                          <button
-                            type="button"
-                            onClick={() => copyText(service.phone, 'Telefone copiado!')}
-                            className="absolute top-4 right-4 inline-flex items-center justify-center h-9 w-9 rounded-xl bg-white/60 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-colors"
-                            aria-label="Copiar telefone"
-                            title="Copiar telefone"
-                          >
-                            <LuCopy size={18} strokeWidth={1.5} />
-                          </button>
-                          <p className="inline-flex items-center justify-center gap-2 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
-                            <LuPhone size={14} strokeWidth={1.5} className="text-slate-500 dark:text-slate-400" />
-                            Telefone
-                          </p>
-                          <a href={`tel:${service.phone}`} className="text-2xl font-bold text-slate-800 dark:text-slate-100 hover:text-[#183F8C] dark:hover:text-[#6F8ABF] transition-colors wrap-break-word">
-                            {service.phone}
-                          </a>
-                          {isMobilePhone(service.phone) && (
-                            <a 
-                              href={getWhatsAppLink(service.phone)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label="Abrir WhatsApp"
-                              title="Abrir WhatsApp"
-                              className="inline-flex items-center justify-center w-16 h-16 bg-green-600 hover:bg-green-700 text-white rounded-full transition-all hover:brightness-110 shadow-lg shadow-green-600/20 hover:shadow-green-600/30"
-                            >
-                              <WhatsAppIcon size={32} />
-                            </a>
-                          )}
-                        </div>
-                      )}
-
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="w-full md:w-5/12 h-full">
-                <div className="ui-card h-full p-7">
-                <div className="flex flex-col items-center justify-center gap-3 mb-5 text-center">
-                  <div className="ui-icon-box text-[#183F8C] dark:text-[#6F8ABF] dark:bg-slate-800/40">
-                    <LuMapPin size={30} strokeWidth={1.5} />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                    <span className="ui-ink-underline">Localização</span>
-                  </h3>
-                </div>
-
-                {service.lat && service.lng && (
-                  <Map 
-                    locations={mapLocations} 
-                    center={[service.lat, service.lng]} 
-                    zoom={15}
-                    heightClassName="h-[240px] sm:h-[260px]"
-                    containerClassName="mb-5 rounded-2xl"
+              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-[#242424] dark:bg-[#111111] dark:shadow-none sm:p-4">
+                {service.imagemUrl ? (
+                  <img
+                    src={service.imagemUrl}
+                    alt={`Imagem de ${service.name}`}
+                    className="aspect-[4/3] w-full rounded-xl object-cover"
+                    loading="lazy"
                   />
+                ) : (
+                  <div className="flex aspect-[4/3] w-full items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-[#191919] dark:text-slate-500">
+                    <LuMapPin size={54} strokeWidth={1.25} />
+                  </div>
                 )}
+              </div>
 
-                <div className="ui-card-muted p-5 text-center flex flex-col items-center">
-                  <p className="text-base font-bold text-slate-900 dark:text-white leading-snug mb-2">
-                    {service.address}{service.number ? `, ${service.number}` : ''}{service.complement ? ` - ${service.complement}` : ''}
-                  </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-500 mb-4">{service.neighborhood}, {service.city} - CEP: {service.zip}</p>
-                  <a 
-                    href={`https://maps.google.com/?q=${encodeURIComponent(`${service.address}, ${service.city}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ui-btn-primary"
+              <div className="max-w-3xl px-1 pt-5 text-left sm:pt-6">
+                <p className="text-lg leading-relaxed text-slate-600 dark:text-slate-300 md:text-xl">
+                  {service.description}
+                </p>
+              </div>
+            </section>
+
+            <aside className="space-y-6 lg:col-span-5">
+            <section className="ui-card p-5 sm:p-6">
+              <div className="mb-5 flex flex-col items-center text-center">
+                <div className="ui-icon-box mb-3 h-12 w-12 rounded-xl text-[#183F8C] dark:text-[#6F8ABF]">
+                  <LuMapPin size={25} strokeWidth={1.5} />
+                </div>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Localização</h2>
+              </div>
+
+              {mapLocations.length > 0 ? (
+                <Map
+                  locations={mapLocations}
+                  center={[service.lat!, service.lng!]}
+                  zoom={15}
+                  heightClassName="h-48 sm:h-56"
+                  containerClassName="mb-4 rounded-xl"
+                />
+              ) : (
+                <div className="mb-4 flex h-48 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 dark:border-[#242424] dark:bg-[#191919] dark:text-slate-500 sm:h-56">
+                  <LuMapPin size={34} strokeWidth={1.5} />
+                </div>
+              )}
+
+              <div className="ui-card-muted p-4 text-center">
+                <p className="text-sm font-bold text-slate-900 dark:text-white">{fullAddress}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{locationLine}</p>
+                <a
+                  href={`https://maps.google.com/?q=${encodeURIComponent(`${fullAddress}, ${service.city}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ui-btn-primary mt-4"
+                >
+                  <LuExternalLink size={16} strokeWidth={1.5} />
+                  Abrir no Google Maps
+                </a>
+              </div>
+            </section>
+
+            <section className="ui-card p-5 sm:p-6">
+              <div className="flex items-center gap-3">
+                <div className="ui-icon-box h-10 w-10 rounded-xl text-[#183F8C] dark:text-[#6F8ABF]">
+                  <LuInfo size={20} strokeWidth={1.5} />
+                </div>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">Informações essenciais</h2>
+              </div>
+
+              <div className="mt-5 flex items-start gap-3">
+                <div className="ui-icon-box h-9 w-9 shrink-0 rounded-xl text-slate-600 dark:text-slate-300">
+                  <LuClock size={18} strokeWidth={1.5} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Horário</p>
+                  {service.operatingDays && <p className="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-100">{service.operatingDays}</p>}
+                  <p className="text-lg font-bold leading-tight text-slate-900 dark:text-white">{service.hours}</p>
+                </div>
+              </div>
+
+              <div className="ui-card-muted mt-5 flex items-center gap-3 p-3">
+                <div className="ui-icon-box h-9 w-9 shrink-0 rounded-xl text-slate-600 dark:text-slate-300">
+                  <LuPhone size={18} strokeWidth={1.5} />
+                </div>
+                <div className="min-w-0 grow">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Contatos</p>
+                  {service.phone ? (
+                    <a href={`tel:${service.phone}`} className="mt-1 block text-base font-bold text-slate-900 transition-colors hover:text-[#183F8C] dark:text-white dark:hover:text-[#6F8ABF]">
+                      {service.phone}
+                    </a>
+                  ) : (
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Não informado</p>
+                  )}
+                </div>
+                {service.phone && (
+                  <button
+                    type="button"
+                    onClick={() => void copyText(service.phone)}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-colors hover:border-[#183F8C] hover:text-[#183F8C] dark:border-[#303030] dark:bg-[#191919] dark:text-slate-300 dark:hover:border-[#6F8ABF] dark:hover:text-white"
+                    aria-label="Copiar telefone"
+                    title="Copiar telefone"
                   >
-                    <LuExternalLink size={18} strokeWidth={1.5} className="shrink-0" />
-                    Abrir no Google Maps
-                  </a>
-                </div>
-
-                {service.imagemUrl && (
-                  <div className="ui-card-muted mt-5 overflow-hidden">
-                    <div className="w-full h-35 sm:h-45 bg-transparent flex items-center justify-center">
-                      <img
-                        src={service.imagemUrl}
-                        alt={`Imagem de ${service.name}`}
-                        className="w-full h-full object-contain"
-                        loading="lazy"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  </div>
+                    <LuCopy size={16} strokeWidth={1.5} />
+                  </button>
                 )}
               </div>
-              </div>
-            </div>
-          </div>
+            </section>
 
-          <div className="max-w-6xl mx-auto">
-            <div className="ui-card p-8">
-              <div className="flex items-center justify-center gap-4 mb-5 text-center">
-                <div className="ui-icon-box text-[#183F8C] dark:text-[#6F8ABF] dark:bg-slate-800/40">
-                  <LuList size={28} strokeWidth={1.5} />
+            <section className="ui-card p-5 sm:p-6">
+              <div className="flex items-center gap-3">
+                <div className="ui-icon-box h-10 w-10 rounded-xl text-[#183F8C] dark:text-[#6F8ABF]">
+                  <LuList size={20} strokeWidth={1.5} />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Serviços oferecidos</h3>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">Serviços oferecidos</h2>
               </div>
-              <div className="flex flex-wrap gap-3 justify-center">
-                {service.services_offered.map((item, index) => (
-                  <div key={index} className={`flex items-center gap-2 px-4 py-2.5 rounded-full border shadow-sm ${getServiceBadgeClassName(index)}`}>
-                    <div className="w-1.5 h-1.5 rounded-full bg-current shrink-0"></div>
-                    <span className="font-semibold">{item}</span>
-                  </div>
-                ))}
+
+              <div className="mt-5 flex flex-wrap gap-2">
+                {service.services_offered.length > 0 ? service.services_offered.map((item, index) => (
+                  <span
+                    key={`${item}-${index}`}
+                    className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:border-[#303030] dark:bg-[#191919] dark:text-slate-200"
+                  >
+                    {item}
+                  </span>
+                )) : (
+                  <p className="text-sm text-slate-600 dark:text-slate-300">Nenhum serviço informado.</p>
+                )}
               </div>
-            </div>
+            </section>
+            </aside>
           </div>
 
+          <div className="mt-6 grid gap-6 lg:hidden">
+            <section className="ui-card p-6 sm:p-7 lg:col-span-7 lg:min-h-80">
+              <div className="flex items-center gap-4">
+                <div className="ui-icon-box h-12 w-12 rounded-xl text-[#183F8C] dark:text-[#6F8ABF]">
+                  <LuInfo size={24} strokeWidth={1.5} />
+                </div>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Informações essenciais</h2>
+              </div>
+
+              <div className="mt-6 flex items-start gap-4">
+                <div className="ui-icon-box h-11 w-11 shrink-0 rounded-xl text-slate-600 dark:text-slate-300">
+                  <LuClock size={22} strokeWidth={1.5} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Horário</p>
+                  {service.operatingDays && <p className="mt-1 text-base font-semibold text-slate-800 dark:text-slate-100">{service.operatingDays}</p>}
+                  <p className="text-xl font-bold leading-tight text-slate-900 dark:text-white">{service.hours}</p>
+                </div>
+              </div>
+
+              <div className="ui-card-muted mt-6 flex items-center gap-4 p-4">
+                <div className="ui-icon-box h-11 w-11 shrink-0 rounded-xl text-slate-600 dark:text-slate-300">
+                  <LuPhone size={22} strokeWidth={1.5} />
+                </div>
+                <div className="min-w-0 grow">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Contatos</p>
+                  {service.phone ? (
+                    <a href={`tel:${service.phone}`} className="mt-1 block text-xl font-bold text-slate-900 transition-colors hover:text-[#183F8C] dark:text-white dark:hover:text-[#6F8ABF]">
+                      {service.phone}
+                    </a>
+                  ) : (
+                    <p className="mt-1 text-base text-slate-600 dark:text-slate-300">Não informado</p>
+                  )}
+                </div>
+                {service.phone && (
+                  <button
+                    type="button"
+                    onClick={() => void copyText(service.phone)}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-colors hover:border-[#183F8C] hover:text-[#183F8C] dark:border-[#303030] dark:bg-[#191919] dark:text-slate-300 dark:hover:border-[#6F8ABF] dark:hover:text-white"
+                    aria-label="Copiar telefone"
+                    title="Copiar telefone"
+                  >
+                    <LuCopy size={18} strokeWidth={1.5} />
+                  </button>
+                )}
+              </div>
+            </section>
+
+            <section className="ui-card p-6 sm:p-7 lg:col-span-5 lg:min-h-80">
+              <div className="flex items-center gap-4">
+                <div className="ui-icon-box h-12 w-12 rounded-xl text-[#183F8C] dark:text-[#6F8ABF]">
+                  <LuList size={24} strokeWidth={1.5} />
+                </div>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Serviços oferecidos</h2>
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                {service.services_offered.length > 0 ? service.services_offered.map((item, index) => (
+                  <span
+                    key={`${item}-${index}`}
+                    className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 dark:border-[#303030] dark:bg-[#191919] dark:text-slate-200"
+                  >
+                    {item}
+                  </span>
+                )) : (
+                  <p className="text-sm text-slate-600 dark:text-slate-300">Nenhum serviço informado.</p>
+                )}
+              </div>
+            </section>
+          </div>
         </FadeIn>
       </div>
-
     </div>
   )
 }
 
 export default ServicoDetalhes
-

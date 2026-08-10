@@ -10,12 +10,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const savedTheme = localStorage.getItem('popinfo_theme') as Theme | null
-    if (savedTheme) return savedTheme
-    
-    return 'light'
-  })
+  const [theme, setTheme] = useState<Theme>('light')
 
   useEffect(() => {
     const root = document.documentElement
@@ -24,10 +19,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } else {
       root.classList.remove('dark')
     }
-    localStorage.setItem('popinfo_theme', theme)
-
     const metaThemeColor = document.querySelector('meta[name="theme-color"]')
-    const color = theme === 'dark' ? '#0f172a' : '#f8fafc'
+    const color = theme === 'dark' ? '#050505' : '#f8fafc'
     
     if (metaThemeColor) {
       metaThemeColor.setAttribute('content', color)

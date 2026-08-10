@@ -34,7 +34,7 @@ interface MapProps {
 
 const Map = ({ locations, center = [-23.5505, -46.6333], zoom = 12, heightClassName = 'h-[400px]', containerClassName = '' }: MapProps) => {
   return (
-    <div className={`${heightClassName} w-full rounded-2xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-slate-800 ${containerClassName}`.trim()}>
+    <div className={`${heightClassName} w-full rounded-2xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-[#242424] ${containerClassName}`.trim()}>
       <MapContainer 
         center={center} 
         zoom={zoom} 

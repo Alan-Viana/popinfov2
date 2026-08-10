@@ -167,7 +167,7 @@ const Servicos = () => {
   }, [filteredServices])
 
   return (
-    <div className="pt-32 pb-20 bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
+    <div className="pt-32 pb-20 bg-[#F8FAFC] dark:bg-[#050505] grow w-full">
       <Helmet>
         <title>Rede Socioassistencial - PopInfo</title>
         <meta name="description" content="Encontre serviços da rede socioassistencial, saúde, educação e moradia em São Paulo. Consulte endereços e contatos." />
@@ -183,7 +183,7 @@ const Servicos = () => {
         </FadeIn>
 
         <div className="flex flex-col md:flex-row gap-6 mb-12">
-          <div className="bg-white dark:bg-transparent p-4 md:p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-transparent backdrop-blur-sm overflow-hidden w-full">
+          <div className="bg-white dark:bg-[#111111] p-4 md:p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-[#242424] dark:shadow-none backdrop-blur-sm overflow-hidden w-full">
             <div className="flex flex-col gap-6">
               
               <div className="flex flex-col md:flex-row gap-4">
@@ -195,7 +195,7 @@ const Servicos = () => {
                     type="text"
                     aria-label="Buscar serviços"
                     placeholder="Busque por nome, bairro ou serviço..."
-                    className="w-full pl-10 md:pl-12 pr-4 py-3 md:py-3.5 border border-slate-200 dark:border-transparent rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-900 text-base md:text-lg"
+                    className="w-full pl-10 md:pl-12 pr-4 py-3 md:py-3.5 border border-slate-200 dark:border-[#242424] rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-slate-50 dark:bg-[#191919] focus:bg-white dark:focus:bg-[#191919] text-base md:text-lg"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -205,7 +205,7 @@ const Servicos = () => {
                   className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all border ${
                     showMap 
                       ? 'bg-[#183F8C] text-white border-[#183F8C] shadow-md hover:bg-[#1C4AA6] hover:shadow-lg' 
-                      : 'bg-blue-50 text-blue-800 border-blue-200 shadow-sm hover:bg-blue-100 hover:border-blue-300 hover:text-blue-900 dark:bg-slate-800 dark:text-blue-100 dark:border-slate-600 dark:shadow-black/10 dark:hover:bg-slate-700 dark:hover:border-slate-500 dark:hover:text-white'
+                      : 'bg-blue-50 text-blue-800 border-blue-200 shadow-sm hover:bg-blue-100 hover:border-blue-300 hover:text-blue-900 dark:bg-[#191919] dark:text-blue-100 dark:border-[#303030] dark:shadow-black/10 dark:hover:bg-[#202020] dark:hover:border-[#303030] dark:hover:text-white'
                   }`}
                 >
                   <LuMap size={18} strokeWidth={1.5} />
@@ -236,7 +236,7 @@ const Servicos = () => {
                     className={`px-4 py-2 md:px-6 md:py-3 rounded-xl text-xs md:text-sm font-bold transition-all border ${
                       selectedType === type
                         ? 'bg-blue-600 text-white shadow-md border-blue-600 scale-105'
-                        : 'bg-white dark:bg-transparent text-slate-600 dark:text-slate-300 border-slate-200 dark:border-transparent hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50 dark:hover:bg-blue-950 hover:text-blue-600 dark:hover:text-blue-300'
+                        : 'bg-white dark:bg-[#111111] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#242424] hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50 dark:hover:bg-blue-950 hover:text-blue-600 dark:hover:text-blue-300'
                     }`}
                   >
                     {type}
@@ -259,7 +259,7 @@ const Servicos = () => {
 
         {visibleServices.length === 0 && !isLoadingMore && (
           <div className="text-center py-20 text-slate-500 dark:text-slate-300">
-            <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+            <div className="w-20 h-20 bg-slate-100 dark:bg-[#191919] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
               <LuSearch size={28} strokeWidth={1.5} className="text-slate-300 dark:text-slate-500" />
             </div>
             <p className="text-xl font-medium">Nenhum serviço encontrado com os critérios selecionados.</p>
@@ -298,19 +298,19 @@ const ServiceCard = ({ service }: { service: PublicServiceLocation }) => {
           openDetails()
         }
       }}
-      className="bg-white dark:bg-slate-900 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] transition-all duration-300 border border-blue-300/80 md:border-slate-100/80 dark:border-slate-800 hover:-translate-y-2 h-full flex flex-col group relative text-center cursor-pointer overflow-hidden"
+      className="bg-white dark:bg-[#111111] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] transition-all duration-300 border border-blue-300/80 md:border-slate-100/80 dark:border-[#242424] hover:-translate-y-2 h-full flex flex-col group relative text-center cursor-pointer overflow-hidden"
       aria-label={`Ver detalhes de ${service.name}`}
     >
       <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#183F8C] to-[#6F8ABF] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
       <div className="p-6 md:p-8 flex-1 flex flex-col items-center text-center">
         <div className="flex flex-col mb-6">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+            <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-slate-100 dark:bg-[#191919] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#242424]">
               {service.type}
             </span>
           </div>
           <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2">{service.name}</h3>
-          <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm line-clamp-2">{service.description}</p>
+          <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm line-clamp-2">{service.description}</p>
         </div>
 
         <div className="flex flex-col gap-3 mb-6 flex-1 text-sm">
@@ -320,7 +320,7 @@ const ServiceCard = ({ service }: { service: PublicServiceLocation }) => {
               <span className="font-medium text-slate-900 dark:text-white">
                 {service.address}{service.number ? `, ${service.number}` : ''}
               </span>
-              <span className="text-slate-500 dark:text-slate-400">{service.neighborhood}, {service.city}</span>
+              <span className="text-slate-500 dark:text-slate-300">{service.neighborhood}, {service.city}</span>
             </div>
           </div>
           
@@ -335,10 +335,10 @@ const ServiceCard = ({ service }: { service: PublicServiceLocation }) => {
           </div>
         </div>
 
-        <div className="border-t border-slate-100 dark:border-slate-800 pt-5 mt-auto">
+        <div className="border-t border-slate-100 dark:border-[#242424] pt-5 mt-auto">
           <div className="flex flex-wrap gap-2 justify-center">
             {service.services_offered.slice(0, 3).map((item, index) => (
-              <span key={index} className="bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 text-xs font-medium px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-700">
+              <span key={index} className="bg-slate-50 dark:bg-[#191919] text-slate-600 dark:text-slate-300 text-xs font-medium px-2.5 py-1 rounded-md border border-slate-100 dark:border-[#242424]">
                 {item}
               </span>
             ))}

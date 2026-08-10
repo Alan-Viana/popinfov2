@@ -52,7 +52,7 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center pt-24 pb-20 bg-[#F8FAFC] dark:bg-slate-900 w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center pt-24 pb-20 bg-[#F8FAFC] dark:bg-[#050505] w-full">
       <Helmet>
         <title>Login - PopInfo</title>
         <meta name="description" content="Acesso restrito para administradores do PopInfo." />
@@ -66,7 +66,7 @@ const Login = () => {
         </FadeIn>
 
         <FadeIn>
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-transparent p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-transparent space-y-4 backdrop-blur-sm">
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-[#111111] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-[#242424] dark:shadow-none space-y-4 backdrop-blur-sm">
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className="text-sm font-semibold text-slate-700 dark:text-slate-200">E-mail</label>
               <div className="relative">
@@ -75,7 +75,7 @@ const Login = () => {
                   id="email"
                   type="email"
                   {...register('email')}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border ${errors.email ? 'border-red-500' : 'border-slate-200 dark:border-transparent'} focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-200 text-base md:text-lg`}
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border ${errors.email ? 'border-red-500' : 'border-slate-200 dark:border-[#242424]'} focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-slate-50 dark:bg-[#191919] focus:bg-white dark:focus:bg-[#191919] text-slate-900 dark:text-slate-200 text-base md:text-lg`}
                   placeholder="seu@email.com"
                   aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? "email-error" : undefined}
@@ -92,7 +92,7 @@ const Login = () => {
                   id="password"
                   type="password"
                   {...register('password')}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border ${errors.password ? 'border-red-500' : 'border-slate-200 dark:border-transparent'} focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-200 text-base md:text-lg`}
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border ${errors.password ? 'border-red-500' : 'border-slate-200 dark:border-[#242424]'} focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-slate-50 dark:bg-[#191919] focus:bg-white dark:focus:bg-[#191919] text-slate-900 dark:text-slate-200 text-base md:text-lg`}
                   placeholder="••••••••"
                   aria-invalid={!!errors.password}
                   aria-describedby={errors.password ? "password-error" : undefined}

@@ -21,7 +21,7 @@ type ContactFormData = z.infer<typeof contactSchema>
 const Contato = () => {
   const [searchParams] = useSearchParams()
   const enviado = searchParams.get('enviado') === '1'
-  
+
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
@@ -56,7 +56,7 @@ const Contato = () => {
 
       const response = await fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -82,7 +82,7 @@ const Contato = () => {
   }
 
   return (
-    <div className="bg-[#F8FAFC] dark:bg-slate-900 grow w-full">
+    <div className="bg-[#F8FAFC] dark:bg-[#050505] grow w-full">
       <Helmet>
         <title>Contato - PopInfo</title>
         <meta name="description" content="Entre em contato com a equipe do PopInfo. Envie suas dúvidas, sugestões ou reclamações." />
@@ -91,11 +91,11 @@ const Contato = () => {
         <div className="min-h-[calc(100vh-8rem)] pt-28 pb-24 flex items-center justify-center">
           <div className="w-full max-w-2xl">
           <FadeIn>
-            <div className="relative bg-white dark:bg-slate-900/60 rounded-3xl border border-slate-100/80 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-black/20 overflow-hidden backdrop-blur">
+            <div className="relative bg-white dark:bg-[#111111] rounded-3xl border border-slate-100/80 dark:border-[#242424] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-black/20 overflow-hidden backdrop-blur">
               <div className="absolute top-0 left-0 w-full h-1.5 bg-[#183F8C] dark:bg-[#6F8ABF]" />
 
               <div className="px-8 pt-10 pb-8 text-center">
-                <div className="mx-auto mb-5 h-14 w-14 rounded-2xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-[#183F8C] dark:text-[#6F8ABF]">
+                <div className="mx-auto mb-5 h-14 w-14 rounded-2xl bg-slate-50 dark:bg-[#191919] border border-slate-200 dark:border-[#242424] flex items-center justify-center text-[#183F8C] dark:text-[#6F8ABF]">
                   <LuSend size={24} strokeWidth={1.5} />
                 </div>
                 <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">Envie sua mensagem</h2>
@@ -110,16 +110,16 @@ const Contato = () => {
                     <label htmlFor="nome" className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1 block">Nome completo</label>
                     <div className="relative group">
                       <LuUser className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${errors.nome ? 'text-red-500' : 'text-slate-400 dark:text-slate-500 group-focus-within:text-[#183F8C] dark:group-focus-within:text-[#6F8ABF]'}`} />
-                      <input 
+                      <input
                         {...register('nome')}
-                        type="text" 
-                        id="nome" 
+                        type="text"
+                        id="nome"
                         autoComplete="name"
                         className={`w-full pl-12 pr-5 h-12 md:h-14 rounded-xl border transition-all duration-300 ${
-                          errors.nome 
-                            ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' 
-                            : 'border-slate-300 dark:border-slate-800 focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'
-                        } bg-white dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 shadow-sm`} 
+                          errors.nome
+                            ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10'
+                            : 'border-slate-300 dark:border-[#242424] focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'
+                        } bg-white dark:bg-[#191919] text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 shadow-sm`}
                         placeholder="Nome completo"
                         aria-invalid={!!errors.nome}
                         aria-describedby={errors.nome ? "nome-error" : undefined}
@@ -136,12 +136,12 @@ const Contato = () => {
                     <label htmlFor="email" className="text-sm font-bold text-slate-700 dark:text-slate-200">E-mail</label>
                     <div className="relative group">
                       <LuMail className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${errors.email ? 'text-red-500' : 'text-slate-400 dark:text-slate-500 group-focus-within:text-[#183F8C] dark:group-focus-within:text-[#6F8ABF]'}`} />
-                      <input 
+                      <input
                         {...register('email')}
-                        type="email" 
-                        id="email" 
+                        type="email"
+                        id="email"
                         autoComplete="email"
-                        className={`w-full pl-14 pr-5 h-12 md:h-14 rounded-xl border transition-all duration-300 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' : 'border-slate-300 dark:border-slate-800 focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'} bg-white dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 shadow-sm`} 
+                        className={`w-full pl-14 pr-5 h-12 md:h-14 rounded-xl border transition-all duration-300 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' : 'border-slate-300 dark:border-[#242424] focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'} bg-white dark:bg-[#191919] text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 shadow-sm`}
                         placeholder="seu@email.com"
                         aria-invalid={!!errors.email}
                         aria-describedby={errors.email ? "email-error" : undefined}
@@ -155,12 +155,12 @@ const Contato = () => {
                     <label htmlFor="telefone" className="text-sm font-bold text-slate-700 dark:text-slate-200">Telefone</label>
                     <div className="relative group">
                       <LuPhone className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${errors.telefone ? 'text-red-500' : 'text-slate-400 dark:text-slate-500 group-focus-within:text-[#183F8C] dark:group-focus-within:text-[#6F8ABF]'}`} />
-                      <input 
+                      <input
                         {...register('telefone')}
-                        type="tel" 
-                        id="telefone" 
+                        type="tel"
+                        id="telefone"
                         autoComplete="tel"
-                        className={`w-full pl-12 pr-5 h-12 md:h-14 rounded-xl border transition-all duration-300 ${errors.telefone ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' : 'border-slate-300 dark:border-slate-800 focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'} bg-white dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 shadow-sm`} 
+                        className={`w-full pl-12 pr-5 h-12 md:h-14 rounded-xl border transition-all duration-300 ${errors.telefone ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' : 'border-slate-300 dark:border-[#242424] focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'} bg-white dark:bg-[#191919] text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 shadow-sm`}
                         placeholder="(11) 0000-0000"
                         aria-invalid={!!errors.telefone}
                         aria-describedby={errors.telefone ? "telefone-error" : undefined}
@@ -172,10 +172,10 @@ const Contato = () => {
                     <label htmlFor="assunto" className="text-sm font-bold text-slate-700 dark:text-slate-200">Assunto</label>
                     <div className="relative group">
                       <LuTag className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${errors.assunto ? 'text-red-500' : 'text-slate-400 dark:text-slate-500 group-focus-within:text-[#183F8C] dark:group-focus-within:text-[#6F8ABF]'}`} />
-                      <select 
+                      <select
                         {...register('assunto')}
-                        id="assunto" 
-                        className={`w-full pl-14 pr-5 h-12 md:h-14 rounded-xl border transition-all duration-300 ${errors.assunto ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' : 'border-slate-300 dark:border-slate-800 focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'} bg-white dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg shadow-sm`}
+                        id="assunto"
+                        className={`w-full pl-14 pr-5 h-12 md:h-14 rounded-xl border transition-all duration-300 ${errors.assunto ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' : 'border-slate-300 dark:border-[#242424] focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'} bg-white dark:bg-[#191919] text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg shadow-sm`}
                         aria-invalid={!!errors.assunto}
                         aria-describedby={errors.assunto ? "assunto-error" : undefined}
                       >
@@ -193,15 +193,15 @@ const Contato = () => {
                   <label htmlFor="mensagem" className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1 block">Mensagem</label>
                   <div className="relative group">
                     <LuMessageSquare className={`absolute left-4 top-5 transition-colors duration-300 ${errors.mensagem ? 'text-red-500' : 'text-slate-400 dark:text-slate-500 group-focus-within:text-[#183F8C] dark:group-focus-within:text-[#6F8ABF]'}`} />
-                    <textarea 
+                    <textarea
                       {...register('mensagem')}
-                      id="mensagem" 
-                      rows={6} 
+                      id="mensagem"
+                      rows={6}
                       className={`w-full pl-12 pr-5 rounded-xl border transition-all duration-300 py-4 ${
-                        errors.mensagem 
-                          ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' 
-                          : 'border-slate-300 dark:border-slate-800 focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'
-                      } bg-white dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 resize-y min-h-42.5 shadow-sm`}  
+                        errors.mensagem
+                          ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10'
+                          : 'border-slate-300 dark:border-[#242424] focus:border-[#183F8C] dark:focus:border-[#6F8ABF] focus:ring-4 focus:ring-[#183F8C]/10 dark:focus:ring-[#6F8ABF]/10'
+                      } bg-white dark:bg-[#191919] text-slate-900 dark:text-slate-100 outline-none text-base md:text-lg placeholder:text-slate-500 dark:placeholder:text-slate-500 resize-y min-h-42.5 shadow-sm`}
                       placeholder="Descreva detalhadamente sua dúvida, sugestão ou solicitação..."
                       aria-invalid={!!errors.mensagem}
                       aria-describedby={errors.mensagem ? "mensagem-error" : undefined}
@@ -215,8 +215,8 @@ const Contato = () => {
                   )}
                 </div>
                 <div className="flex md:justify-center w-full">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     disabled={isSubmitting}
                     className="w-full md:w-auto inline-flex items-center justify-center gap-2 md:gap-3 px-4 md:px-12 h-12 md:h-14 rounded-xl bg-[#183F8C] hover:bg-[#1C4AA6] text-white font-bold text-base md:text-lg transition-all duration-300 shadow-xl shadow-[#183F8C]/15 hover:shadow-[#183F8C]/25 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5 active:translate-y-0"
                   >

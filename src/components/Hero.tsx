@@ -81,7 +81,7 @@ const Hero = () => {
   }
 
   return (
-    <section className="min-h-[90vh] flex items-center justify-center bg-[#F8FAFC] dark:bg-slate-950 relative overflow-hidden pt-32 md:pt-20 transition-colors duration-500 perspective-[1000px]">
+    <section className="min-h-[90vh] flex items-center justify-center bg-[#F8FAFC] dark:bg-[#050505] relative overflow-hidden pt-32 md:pt-20 transition-colors duration-500 perspective-[1000px]">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 opacity-[0.92] dark:opacity-[0.28]" style={{
           backgroundImage: `
@@ -97,14 +97,14 @@ const Hero = () => {
           `,
           backgroundSize: '12px 12px'
         }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#F8FAFC]/10 to-[#F8FAFC] dark:via-slate-950/10 dark:to-slate-900" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#F8FAFC]/10 to-[#F8FAFC] dark:via-[#050505]/10 dark:to-[#050505]" />
       </div>
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[20%] w-[500px] h-[500px] bg-blue-500/5 dark:bg-blue-600/5 rounded-full blur-[120px] animate-blob" />
         <div className="absolute bottom-[10%] left-[20%] w-[400px] h-[400px] bg-[#6F8ABF]/10 dark:bg-[#6F8ABF]/10 rounded-full blur-[120px] animate-blob animation-delay-2000" />
       </div>
 
-      <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-b from-transparent to-[#F8FAFC] dark:to-slate-900 pointer-events-none transition-colors duration-500" />
+      <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-b from-transparent to-[#F8FAFC] dark:to-[#050505] pointer-events-none transition-colors duration-500" />
 
       <div className="container mx-auto px-8 max-w-5xl text-center z-10 relative">
         <FadeIn>
@@ -128,7 +128,7 @@ const Hero = () => {
             <motion.div 
               whileHover={{ scale: 1.02, rotateX: 2, rotateY: 0, boxShadow: "0px 20px 40px rgba(0,0,0,0.1)" }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="relative flex flex-col md:flex-row items-center gap-2 bg-white dark:bg-slate-900 p-2 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-slate-800 focus-within:border-blue-500 dark:focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all transform-style-3d"
+              className="relative flex flex-col md:flex-row items-center gap-2 bg-white dark:bg-[#111111] p-2 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 dark:border-[#242424] focus-within:border-blue-500 dark:focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all transform-style-3d"
             >
               <LuSearch className="hidden md:block text-slate-400 text-2xl ml-4" />
               <input
@@ -141,12 +141,12 @@ const Hero = () => {
               />
               <button 
                 onClick={handleSearch} 
-                className="bg-slate-900 dark:bg-[#183F8C] text-white dark:text-white px-8 py-3.5 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition-all hover:bg-[#183F8C] dark:hover:bg-white dark:hover:text-slate-900 hover:shadow-md md:w-auto w-full shrink-0"
+                className="bg-slate-900 dark:bg-[#183F8C] text-white px-8 py-3.5 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition-all hover:bg-[#183F8C] dark:hover:bg-[#1C4AA6] hover:shadow-md md:w-auto w-full shrink-0"
               >
                 Buscar
               </button>
             </motion.div>
-            <p className="relative text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed font-medium mt-10 md:mt-16 lg:mt-24 mb-12" aria-label={descriptionText}>
+            <p className="relative text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-medium mt-10 md:mt-16 lg:mt-24 mb-12" aria-label={descriptionText}>
               <span className="sr-only">{descriptionText}</span>
               <span aria-hidden className="block opacity-0 select-none pointer-events-none">
                 {descriptionText}
@@ -156,7 +156,7 @@ const Hero = () => {
                 {!prefersReducedMotion && shouldAnimateTyping && typedText.length < descriptionText.length && (
                   <motion.span
                     aria-hidden
-                    className="inline-block w-[1ch] font-mono text-slate-500 dark:text-slate-400"
+                    className="inline-block w-[1ch] font-mono text-slate-500 dark:text-slate-300"
                     animate={{ opacity: [0, 1, 0] }}
                     transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
                   >
