@@ -197,7 +197,7 @@ const ServicoDetalhes = () => {
               </div>
             </section>
 
-            <section className="ui-card p-5 sm:p-6">
+            <section className="ui-card hidden p-5 sm:p-6 lg:block">
               <div className="flex items-center gap-3">
                 <div className="ui-icon-box h-10 w-10 rounded-xl text-[#183F8C] dark:text-[#6F8ABF]">
                   <LuInfo size={20} strokeWidth={1.5} />
@@ -244,7 +244,7 @@ const ServicoDetalhes = () => {
               </div>
             </section>
 
-            <section className="ui-card p-5 sm:p-6">
+            <section className="ui-card hidden p-5 sm:p-6 lg:block">
               <div className="flex items-center gap-3">
                 <div className="ui-icon-box h-10 w-10 rounded-xl text-[#183F8C] dark:text-[#6F8ABF]">
                   <LuList size={20} strokeWidth={1.5} />
